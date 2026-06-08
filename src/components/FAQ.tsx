@@ -68,12 +68,7 @@ export function FAQ() {
           <div className="gold-divider mx-auto mt-8 w-24" />
         </div>
 
-        <Accordion
-          type="single"
-          collapsible
-          defaultValue="faq-0"
-          className="mt-12 space-y-3"
-        >
+        <Accordion type="single" collapsible defaultValue="faq-0" className="mt-12 space-y-3">
           {FAQS.map((item, i) => (
             <AccordionItem
               key={item.q}
@@ -96,9 +91,7 @@ export function FAQ() {
         </Accordion>
 
         <div className="mt-14 rounded-2xl border border-gold/30 bg-card p-8 text-center shadow-[0_20px_60px_-30px_rgba(0,0,0,0.18)] md:p-10">
-          <h3 className="font-display text-2xl text-graphite md:text-3xl">
-            Still have questions?
-          </h3>
+          <h3 className="font-display text-2xl text-graphite md:text-3xl">Still have questions?</h3>
           <p className="mt-3 text-muted-foreground">
             Send us your requirements and we’ll guide you.
           </p>

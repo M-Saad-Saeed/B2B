@@ -79,18 +79,15 @@ export function QuoteForm({ defaultProduct }: { defaultProduct?: string }) {
     }
 
     setSubmitting(true);
+    const uploadedPaths: string[] = [];
     try {
       let file_url: string | null = null;
       let file_urls: string[] = [];
       if (files.length > 0) {
-        const uploadedPaths: string[] = [];
-
         for (const file of files) {
           const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
           const path = `${QUOTE_UPLOAD_FOLDER}/${Date.now()}-${crypto.randomUUID()}-${safeName}`;
-          const { error: upErr } = await supabase.storage
-            .from("quote-uploads")
-            .upload(path, file);
+          const { error: upErr } = await supabase.storage.from("quote-uploads").upload(path, file);
           if (upErr) throw upErr;
           uploadedPaths.push(path);
         }
@@ -117,6 +114,9 @@ export function QuoteForm({ defaultProduct }: { defaultProduct?: string }) {
       if (insErr) throw insErr;
       setSuccess(true);
     } catch (err) {
+      if (uploadedPaths.length > 0) {
+        await supabase.storage.from("quote-uploads").remove(uploadedPaths);
+      }
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setSubmitting(false);
@@ -156,11 +156,20 @@ export function QuoteForm({ defaultProduct }: { defaultProduct?: string }) {
         <Field label="Email *" name="email" type="email" required />
         <Field label="WhatsApp number" name="whatsapp_number" placeholder="+1 ..." />
         <Field label="Country" name="country" />
-        <Select label="Product type" name="product_type" defaultValue={defaultProduct} options={PRODUCT_TYPES} />
+        <Select
+          label="Product type"
+          name="product_type"
+          defaultValue={defaultProduct}
+          options={PRODUCT_TYPES}
+        />
         <Field label="Size required" name="size_required" placeholder='e.g. 24" x 8"' />
         <Field label="Quantity" name="quantity" placeholder="e.g. 50" />
         <Select label="Lighting option" name="lighting_option" options={LIGHTING} />
-        <Field label="Material / finish preference" name="material_finish" placeholder="e.g. brushed gold acrylic" />
+        <Field
+          label="Material / finish preference"
+          name="material_finish"
+          placeholder="e.g. brushed gold acrylic"
+        />
         <Field label="Deadline" name="deadline" placeholder="e.g. in 3 weeks" />
         <FileField files={files} setFiles={setFiles} setError={setError} />
       </div>
@@ -319,9 +328,7 @@ function FileField({
       </label>
       <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-gold/40 bg-[var(--card-soft)] px-4 py-3 text-sm text-muted-foreground transition-colors hover:border-gold hover:text-graphite">
         <Upload className="h-4 w-4 text-gold" strokeWidth={1.5} />
-        <span className="truncate">
-          {fileNames ?? "Choose up to 5 files"}
-        </span>
+        <span className="truncate">{fileNames ?? "Choose up to 5 files"}</span>
         <input
           type="file"
           multiple

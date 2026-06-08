@@ -124,8 +124,7 @@ function Hero() {
           </span>
           <h1 className="mt-6 font-display text-[2.6rem] leading-[1.05] text-graphite md:text-[3.6rem] lg:text-[4.2rem]">
             Custom signs made for{" "}
-            <span className="gold-gradient-text italic">brands, resellers</span>{" "}
-            &amp; businesses.
+            <span className="gold-gradient-text italic">brands, resellers</span> &amp; businesses.
           </h1>
           <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
             Premium acrylic, backlit, UV printed, metal finish, and event signage manufactured for
@@ -197,7 +196,7 @@ function Hero() {
 function TrustStrip() {
   const items = [
     { Icon: PenTool, label: "Custom quotations on demand" },
-    { Icon: Clock, label: "Production 1-3 Days", },
+    { Icon: Clock, label: "Production 1-3 Days" },
     { Icon: Package, label: "Bulk order discounts" },
     { Icon: Palette, label: "Design support available" },
     { Icon: Globe2, label: "Worldwide delivery" },
@@ -321,7 +320,9 @@ function Products() {
                   <span className="h-px flex-1 bg-border" />
                 </div>
                 <h3 className="mt-3 font-display text-2xl text-graphite">{p.title}</h3>
-                <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">{p.desc}</p>
+                <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
+                  {p.desc}
+                </p>
                 <a
                   href="#quote"
                   className="quote-cta-inline mt-6 inline-flex items-center gap-2 text-sm text-graphite transition-colors group-hover:text-gold"
@@ -338,13 +339,7 @@ function Products() {
   );
 }
 
-function ProductCardReveal({
-  children,
-  index,
-}: {
-  children: ReactNode;
-  index: number;
-}) {
+function ProductCardReveal({ children, index }: { children: ReactNode; index: number }) {
   const cardRef = useRef<HTMLElement | null>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -550,9 +545,8 @@ function StatsSection() {
           </h2>
 
           <p className="mt-5 text-base leading-relaxed text-muted-foreground md:text-lg">
-            From single branded displays to bulk white-label fulfilment, Custom Logo Sign
-            supports custom signage projects with design support, fast production, and
-            worldwide delivery.
+            From single branded displays to bulk white-label fulfilment, Custom Logo Sign supports
+            custom signage projects with design support, fast production, and worldwide delivery.
           </p>
         </div>
 
@@ -645,14 +639,17 @@ function WhyUs() {
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-14 lg:grid-cols-[1fr_1.2fr] lg:items-start">
           <div className="lg:sticky lg:top-32">
-            <span className="text-xs uppercase tracking-[0.22em] text-gold">Why partner with us</span>
+            <span className="text-xs uppercase tracking-[0.22em] text-gold">
+              Why partner with us
+            </span>
             <h2 className="mt-4 font-display text-4xl text-graphite md:text-5xl">
               Why businesses work with Custom Logo Sign
             </h2>
             <p className="mt-6 leading-relaxed text-muted-foreground">
-              We support businesses, agencies, resellers, and event professionals with custom signage
-              manufacturing, flexible finishes, and reliable fulfilment. Whether you need one premium
-              piece or repeated bulk orders, we help you deliver high-quality signage to your clients.
+              We support businesses, agencies, resellers, and event professionals with custom
+              signage manufacturing, flexible finishes, and reliable fulfilment. Whether you need
+              one premium piece or repeated bulk orders, we help you deliver high-quality signage to
+              your clients.
             </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -676,11 +673,35 @@ function WhyUs() {
 
 /* -------------------- MATERIALS -------------------- */
 const MATERIAL_GROUPS = [
-  { title: "Acrylic", items: ["Thickness 3mm – 25mm", "Clear · frosted · white · black · ivory", "Custom colour-tinted acrylic"] },
-  { title: "Mounting & Spacers", items: ["Gold, silver, black, white spacers", "Flush-mount or stand-off depth", "Discreet hardware finishing"] },
-  { title: "Print & Detail", items: ["UV print artwork", "3D raised lettering", "Layered logo construction"] },
+  {
+    title: "Acrylic",
+    items: [
+      "Thickness 3mm – 25mm",
+      "Clear · frosted · white · black · ivory",
+      "Custom colour-tinted acrylic",
+    ],
+  },
+  {
+    title: "Mounting & Spacers",
+    items: [
+      "Gold, silver, black, white spacers",
+      "Flush-mount or stand-off depth",
+      "Discreet hardware finishing",
+    ],
+  },
+  {
+    title: "Print & Detail",
+    items: ["UV print artwork", "3D raised lettering", "Layered logo construction"],
+  },
   { title: "Lighting", items: ["Backlit · halo", "Front lit", "Lightbox illumination"] },
-  { title: "Finishes", items: ["Brushed gold · silver · rose gold", "Matte black · ivory", "Custom brand colour matching"] },
+  {
+    title: "Finishes",
+    items: [
+      "Brushed gold · silver · rose gold",
+      "Matte black · ivory",
+      "Custom brand colour matching",
+    ],
+  },
 ];
 
 function Materials() {
@@ -689,13 +710,15 @@ function Materials() {
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-14 lg:grid-cols-[1.05fr_1fr]">
           <div>
-            <span className="text-xs uppercase tracking-[0.22em] text-gold">Materials, finishes &amp; custom options</span>
+            <span className="text-xs uppercase tracking-[0.22em] text-gold">
+              Materials, finishes &amp; custom options
+            </span>
             <h2 className="mt-4 font-display text-4xl md:text-5xl">
               Crafted from <span className="gold-gradient-text italic">considered</span> materials.
             </h2>
             <p className="mt-6 max-w-xl leading-relaxed text-primary-foreground/70">
-              Every sign is built to order. Choose your acrylic, lighting, finish and mounting — or let
-              our team recommend the right combination for your brand and venue.
+              Every sign is built to order. Choose your acrylic, lighting, finish and mounting — or
+              let our team recommend the right combination for your brand and venue.
             </p>
             <div className="mt-10 grid gap-5 sm:grid-cols-2">
               {MATERIAL_GROUPS.map((g) => (
@@ -743,10 +766,26 @@ function Materials() {
 
 /* -------------------- HOW IT WORKS -------------------- */
 const STEPS = [
-  { n: "01", title: "Share your requirements", desc: "Send your logo, size, quantity, deadline, and preferred finish." },
-  { n: "02", title: "Receive quote & mockup", desc: "Our team provides a custom quotation and digital mockup for approval." },
-  { n: "03", title: "Approve & start production", desc: "Once approved, your sign moves into production with selected materials and finishes." },
-  { n: "04", title: "Ship worldwide", desc: "We ship to your business, client, or final customer using DHL, UPS, or FedEx." },
+  {
+    n: "01",
+    title: "Share your requirements",
+    desc: "Send your logo, size, quantity, deadline, and preferred finish.",
+  },
+  {
+    n: "02",
+    title: "Receive quote & mockup",
+    desc: "Our team provides a custom quotation and digital mockup for approval.",
+  },
+  {
+    n: "03",
+    title: "Approve & start production",
+    desc: "Once approved, your sign moves into production with selected materials and finishes.",
+  },
+  {
+    n: "04",
+    title: "Ship worldwide",
+    desc: "We ship to your business, client, or final customer using DHL, UPS, or FedEx.",
+  },
 ];
 
 function HowItWorks() {
@@ -790,15 +829,17 @@ function B2B() {
       <div className="mx-auto max-w-7xl overflow-hidden rounded-3xl border border-gold/30 bg-[var(--card-soft)]">
         <div className="grid gap-10 p-10 lg:grid-cols-[1.1fr_1fr] lg:p-16">
           <div>
-            <span className="text-xs uppercase tracking-[0.22em] text-gold">For resellers &amp; agencies</span>
+            <span className="text-xs uppercase tracking-[0.22em] text-gold">
+              For resellers &amp; agencies
+            </span>
             <h2 className="mt-4 font-display text-4xl text-graphite md:text-5xl">
               Built for resellers, agencies &amp; bulk buyers.
             </h2>
             <p className="mt-6 max-w-xl leading-relaxed text-muted-foreground">
               Custom Logo Sign supports B2B and white-label signage orders for businesses that need
-              reliable manufacturing, flexible customization, and global fulfilment. We can help with
-              custom logo signs, client projects, event signage, retail displays, and repeated bulk
-              orders.
+              reliable manufacturing, flexible customization, and global fulfilment. We can help
+              with custom logo signs, client projects, event signage, retail displays, and repeated
+              bulk orders.
             </p>
             <a
               href="#quote"
@@ -932,7 +973,12 @@ function ContactRow({
     </div>
   );
   return href ? (
-    <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" className="block transition-opacity hover:opacity-80">
+    <a
+      href={href}
+      target={href.startsWith("http") ? "_blank" : undefined}
+      rel="noopener noreferrer"
+      className="block transition-opacity hover:opacity-80"
+    >
       {inner}
     </a>
   ) : (
@@ -949,7 +995,8 @@ function Footer() {
           <div>
             <Logo />
             <p className="mt-6 max-w-sm text-sm leading-relaxed text-muted-foreground">
-              Premium custom acrylic and business signage for B2B, wholesale, and white-label clients.
+              Premium custom acrylic and business signage for B2B, wholesale, and white-label
+              clients.
             </p>
             <div className="mt-6 flex gap-3">
               <a
@@ -1004,17 +1051,29 @@ function Footer() {
             <ul className="mt-5 space-y-3 text-sm text-foreground/75">
               <li className="flex items-start gap-2">
                 <Mail className="mt-0.5 h-4 w-4 text-gold" />
-                <a href={`mailto:${EMAIL}`} className="hover:text-gold">{EMAIL}</a>
+                <a href={`mailto:${EMAIL}`} className="hover:text-gold">
+                  {EMAIL}
+                </a>
               </li>
               <li className="flex items-start gap-2">
                 <WhatsAppIcon className="mt-0.5 h-5 w-5" />
-                <a href={WA_URL} target="_blank" rel="noopener noreferrer" className="hover:text-gold">
+                <a
+                  href={WA_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-gold"
+                >
                   +1 430 431 4377
                 </a>
               </li>
               <li className="flex items-start gap-2">
                 <Instagram className="mt-0.5 h-4 w-4 text-gold" />
-                <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer" className="hover:text-gold">
+                <a
+                  href={INSTAGRAM}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-gold"
+                >
                   @custom_logo_signs_
                 </a>
               </li>

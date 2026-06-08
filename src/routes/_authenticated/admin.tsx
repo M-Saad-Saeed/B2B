@@ -111,10 +111,7 @@ function AdminDashboard() {
   const updateStatus = async (id: string, status: Status) => {
     const prev = inquiries;
     setInquiries((items) => items.map((i) => (i.id === id ? { ...i, status } : i)));
-    const { error: err } = await supabase
-      .from("quote_inquiries")
-      .update({ status })
-      .eq("id", id);
+    const { error: err } = await supabase.from("quote_inquiries").update({ status }).eq("id", id);
     if (err) {
       setInquiries(prev);
       toast.error(`Failed to update: ${err.message}`);
@@ -175,13 +172,7 @@ function AdminDashboard() {
     return inquiries.filter((i) => {
       if (statusFilter !== "All" && i.status !== statusFilter) return false;
       if (!q) return true;
-      return [
-        i.full_name,
-        i.business_name,
-        i.email,
-        i.whatsapp_number,
-        i.product_type,
-      ]
+      return [i.full_name, i.business_name, i.email, i.whatsapp_number, i.product_type]
         .filter(Boolean)
         .some((v) => v!.toLowerCase().includes(q));
     });
@@ -229,11 +220,7 @@ function AdminDashboard() {
               View and manage quote requests submitted through the Custom Logo Sign website.
             </p>
           </div>
-          <Button
-            onClick={signOut}
-            variant="outline"
-            className="rounded-full border-border"
-          >
+          <Button onClick={signOut} variant="outline" className="rounded-full border-border">
             <LogOut className="mr-2 h-4 w-4" /> Sign out
           </Button>
         </div>
@@ -260,10 +247,7 @@ function AdminDashboard() {
               className="pl-9"
             />
           </div>
-          <Select
-            value={statusFilter}
-            onValueChange={(v) => setStatusFilter(v as Status | "All")}
-          >
+          <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as Status | "All")}>
             <SelectTrigger className="w-full sm:w-48">
               <SelectValue />
             </SelectTrigger>
@@ -326,9 +310,7 @@ function AdminDashboard() {
                           <td className="px-4 py-4">
                             <div className="font-medium text-foreground">{i.full_name}</div>
                             {i.business_name && (
-                              <div className="text-xs text-muted-foreground">
-                                {i.business_name}
-                              </div>
+                              <div className="text-xs text-muted-foreground">{i.business_name}</div>
                             )}
                             {i.country && (
                               <div className="text-xs text-muted-foreground">{i.country}</div>
@@ -344,9 +326,7 @@ function AdminDashboard() {
                               </a>
                             </div>
                             {i.whatsapp_number && (
-                              <div className="mt-1 text-muted-foreground">
-                                {i.whatsapp_number}
-                              </div>
+                              <div className="mt-1 text-muted-foreground">{i.whatsapp_number}</div>
                             )}
                           </td>
                           <td className="px-4 py-4 text-xs">
@@ -424,9 +404,7 @@ function AdminDashboard() {
                       <div>
                         <div className="font-medium text-foreground">{i.full_name}</div>
                         {i.business_name && (
-                          <div className="text-xs text-muted-foreground">
-                            {i.business_name}
-                          </div>
+                          <div className="text-xs text-muted-foreground">{i.business_name}</div>
                         )}
                       </div>
                       <Badge variant="outline" className={STATUS_STYLES[i.status]}>
@@ -469,9 +447,7 @@ function AdminDashboard() {
                           ))}
                         </div>
                       ) : (
-                        <span className="text-xs text-muted-foreground">
-                          No file uploaded
-                        </span>
+                        <span className="text-xs text-muted-foreground">No file uploaded</span>
                       )}
                       <Select
                         value={i.status}
@@ -500,27 +476,13 @@ function AdminDashboard() {
   );
 }
 
-function SummaryCard({
-  label,
-  value,
-  accent,
-}: {
-  label: string;
-  value: number;
-  accent?: boolean;
-}) {
+function SummaryCard({ label, value, accent }: { label: string; value: number; accent?: boolean }) {
   return (
     <div
-      className={`rounded-2xl border bg-card p-4 ${
-        accent ? "border-gold/40" : "border-border"
-      }`}
+      className={`rounded-2xl border bg-card p-4 ${accent ? "border-gold/40" : "border-border"}`}
     >
       <div className="text-xs uppercase tracking-wide text-muted-foreground">{label}</div>
-      <div
-        className={`mt-1 font-serif text-3xl ${
-          accent ? "text-gold" : "text-foreground"
-        }`}
-      >
+      <div className={`mt-1 font-serif text-3xl ${accent ? "text-gold" : "text-foreground"}`}>
         {value}
       </div>
     </div>

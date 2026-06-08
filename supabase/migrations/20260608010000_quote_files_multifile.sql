@@ -22,5 +22,7 @@ with check (
   bucket_id = 'quote-uploads'
   and name like 'quote-inquiries/%'
   and lower(storage.extension(name)) in ('jpg', 'jpeg', 'png', 'webp', 'pdf', 'svg', 'ai', 'eps')
-  and coalesce((metadata->>'size')::bigint, 0) <= 10485760
+  and metadata ? 'size'
+  and (metadata->>'size') ~ '^[0-9]+$'
+  and (metadata->>'size')::bigint <= 10485760
 );
