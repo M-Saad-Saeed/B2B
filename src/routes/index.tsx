@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ComponentType, ReactNode } from "react";
 import {
   ArrowRight,
@@ -299,10 +299,7 @@ function Products() {
         />
         <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {PRODUCTS.map((p, i) => (
-            <article
-              key={p.title}
-              className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all duration-300 hover:-translate-y-1 hover:border-gold/40 hover:shadow-[0_24px_60px_-30px_rgba(176,141,87,0.35)]"
-            >
+            <ProductCardReveal key={p.title} index={i}>
               <div className="p-5">
                 {p.carouselImages ? (
                   <WeddingImageCarousel images={p.carouselImages} />
@@ -333,11 +330,65 @@ function Products() {
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </a>
               </div>
-            </article>
+            </ProductCardReveal>
           ))}
         </div>
       </div>
     </section>
+  );
+}
+
+function ProductCardReveal({
+  children,
+  index,
+}: {
+  children: ReactNode;
+  index: number;
+}) {
+  const cardRef = useRef<HTMLElement | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const card = cardRef.current;
+    if (!card || isVisible) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) {
+          return;
+        }
+
+        setIsVisible(true);
+        observer.disconnect();
+      },
+      {
+        threshold: 0.05,
+      },
+    );
+
+    observer.observe(card);
+
+    return () => observer.disconnect();
+  }, [isVisible]);
+
+  const isMobileViewport =
+    typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches;
+  const delay = (index % (isMobileViewport ? 1 : 3)) * 80;
+
+  return (
+    <article
+      ref={cardRef}
+      className={`product-card-reveal group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all duration-300 hover:-translate-y-1 hover:border-gold/40 hover:shadow-[0_24px_60px_-30px_rgba(176,141,87,0.35)] ${
+        isVisible ? "is-visible" : ""
+      }`}
+      style={{
+        transitionDelay: isVisible ? `${delay}ms` : "0ms",
+      }}
+    >
+      {children}
+    </article>
   );
 }
 
@@ -431,16 +482,19 @@ function WeddingImageCarousel({ images }: { images: ProductCardImage[] }) {
 const STATS = [
   {
     value: "500+",
+    endValue: 500,
     label: "Businesses Served",
     text: "Supporting brands, agencies, retailers, cafes, studios, and event businesses.",
   },
   {
     value: "10,000+",
+    endValue: 10000,
     label: "Custom Signs Produced",
     text: "Made-to-order acrylic, backlit, UV printed, metal finish, and event signage.",
   },
   {
     value: "60+",
+    endValue: 60,
     label: "Countries Shipped",
     text: "Worldwide delivery support through DHL, UPS, FedEx, and trusted shipping partners.",
   },
@@ -452,9 +506,36 @@ const STATS = [
 ];
 
 function StatsSection() {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [hasCounted, setHasCounted] = useState(false);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section || hasCounted) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) {
+          return;
+        }
+
+        setHasCounted(true);
+        observer.disconnect();
+      },
+      { threshold: 0.2 },
+    );
+
+    observer.observe(section);
+
+    return () => observer.disconnect();
+  }, [hasCounted]);
+
   return (
     <section
       id="stats"
+      ref={sectionRef}
       className="relative overflow-hidden bg-[var(--card-soft)] px-6 py-20 lg:px-10"
     >
       <div className="absolute left-0 top-0 h-40 w-40 rounded-full bg-gold/10 blur-3xl" />
@@ -485,7 +566,11 @@ function StatsSection() {
               <div className="mx-auto mb-5 h-px w-14 bg-gradient-to-r from-transparent via-gold to-transparent transition-all duration-300 group-hover:w-20" />
 
               <div className="font-display text-5xl leading-none text-graphite md:text-6xl">
-                {stat.value}
+                {"endValue" in stat ? (
+                  <CountUpValue end={stat.endValue} suffix="+" start={hasCounted} />
+                ) : (
+                  stat.value
+                )}
               </div>
 
               <h3 className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-gold">
@@ -499,6 +584,48 @@ function StatsSection() {
       </div>
     </section>
   );
+}
+
+function CountUpValue({
+  end,
+  suffix = "",
+  start,
+}: {
+  end: number;
+  suffix?: string;
+  start: boolean;
+}) {
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    if (!start) {
+      return;
+    }
+
+    let frameId = 0;
+    let startTime: number | null = null;
+    const duration = 1400;
+
+    const tick = (timestamp: number) => {
+      if (startTime === null) {
+        startTime = timestamp;
+      }
+
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      const easedProgress = 1 - Math.pow(1 - progress, 3);
+      setValue(Math.round(end * easedProgress));
+
+      if (progress < 1) {
+        frameId = window.requestAnimationFrame(tick);
+      }
+    };
+
+    frameId = window.requestAnimationFrame(tick);
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [end, start]);
+
+  return `${value.toLocaleString()}${suffix}`;
 }
 
 /* -------------------- WHY US -------------------- */

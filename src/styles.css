@@ -286,6 +286,28 @@
   .quote-cta-inline:hover::before {
     transform: scaleX(1);
   }
+
+  .product-card-reveal {
+    opacity: 0;
+    transform: translate3d(-40px, 0, 0);
+    transition:
+      opacity 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+      transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
+    will-change: opacity, transform;
+  }
+
+  @media (max-width: 767px) {
+    .product-card-reveal {
+      transform: translate3d(0, -40px, 0);
+    }
+  }
+
+  .product-card-reveal.is-visible {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
 }
 
 @keyframes quoteHaloDrift {
@@ -394,6 +416,13 @@
 
   .animate-\[statsFadeUp_0\.8s_ease-out_both\] {
     animation: none !important;
+  }
+
+  .product-card-reveal,
+  .product-card-reveal.is-visible {
+    opacity: 1;
+    transform: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
   }
 }
 
