@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
@@ -424,13 +425,4 @@
     transform: none;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
   }
-}
-
-@font-face {
-  font-family: "Cormorant Garamond";
-  font-style: normal;
-  font-weight: 300 700;
-  font-display: swap;
-  src: url("https://fonts.gstatic.com/s/cormorantgaramond/v16/co3bmX5slCNuHLi8bLeY9MK7whWMhyjornFLsS6V7w.woff2")
-    format("woff2");
 }
