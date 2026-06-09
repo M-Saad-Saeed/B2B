@@ -25,6 +25,7 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const MAX_FILES = 5;
 const MAX_TOTAL_UPLOAD_SIZE = 50 * 1024 * 1024;
 const QUOTE_UPLOAD_FOLDER = "quote-inquiries";
+const WEB3FORMS_ACCESS_KEY = "be15b3e9-ef26-4ec6-8459-9c779374b27f";
 const ACCEPTED_FILE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp", ".pdf", ".svg", ".ai", ".eps"];
 const ACCEPTED_FILE_TYPES = new Set([
   "image/jpeg",
@@ -112,6 +113,8 @@ export function QuoteForm({ defaultProduct }: { defaultProduct?: string }) {
         file_urls,
       });
       if (insErr) throw insErr;
+
+      await submitQuoteEmail(parsed.data, file_urls);
       setSuccess(true);
     } catch (err) {
       if (uploadedPaths.length > 0) {
@@ -247,6 +250,59 @@ function validateFiles(files: File[]) {
 function getFileExtension(fileName: string) {
   const index = fileName.lastIndexOf(".");
   return index >= 0 ? fileName.slice(index).toLowerCase() : "";
+}
+
+async function submitQuoteEmail(
+  data: z.infer<typeof schema>,
+  fileUrls: string[],
+) {
+  const formData = new FormData();
+  formData.append("access_key", WEB3FORMS_ACCESS_KEY);
+  formData.append("subject", `New quote request from ${data.full_name}`);
+  formData.append("from_name", "Custom Logo Sign Website");
+  formData.append("name", data.full_name);
+  formData.append("email", data.email);
+  formData.append("message", formatEmailMessage(data, fileUrls));
+
+  if (data.business_name) formData.append("business_name", data.business_name);
+  if (data.whatsapp_number) formData.append("whatsapp_number", data.whatsapp_number);
+  if (data.country) formData.append("country", data.country);
+  if (data.product_type) formData.append("product_type", data.product_type);
+  if (data.size_required) formData.append("size_required", data.size_required);
+  if (data.quantity) formData.append("quantity", data.quantity);
+  if (data.lighting_option) formData.append("lighting_option", data.lighting_option);
+  if (data.material_finish) formData.append("material_finish", data.material_finish);
+  if (data.deadline) formData.append("deadline", data.deadline);
+  if (data.notes) formData.append("notes", data.notes);
+  if (fileUrls.length > 0) formData.append("file_urls", fileUrls.join("\n"));
+
+  const response = await fetch("https://api.web3forms.com/submit", {
+    method: "POST",
+    body: formData,
+  });
+
+  const result = (await response.json()) as { success?: boolean; message?: string };
+  if (!response.ok || !result.success) {
+    throw new Error(result.message || "Failed to send email notification");
+  }
+}
+
+function formatEmailMessage(data: z.infer<typeof schema>, fileUrls: string[]) {
+  return [
+    `Full name: ${data.full_name}`,
+    `Business name: ${data.business_name || "-"}`,
+    `Email: ${data.email}`,
+    `WhatsApp number: ${data.whatsapp_number || "-"}`,
+    `Country: ${data.country || "-"}`,
+    `Product type: ${data.product_type || "-"}`,
+    `Size required: ${data.size_required || "-"}`,
+    `Quantity: ${data.quantity || "-"}`,
+    `Lighting option: ${data.lighting_option || "-"}`,
+    `Material / finish: ${data.material_finish || "-"}`,
+    `Deadline: ${data.deadline || "-"}`,
+    `Notes: ${data.notes || "-"}`,
+    `Uploaded files: ${fileUrls.length > 0 ? fileUrls.join(", ") : "-"}`,
+  ].join("\n");
 }
 
 function Field({
