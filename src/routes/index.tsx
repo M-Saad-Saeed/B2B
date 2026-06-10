@@ -115,7 +115,7 @@ function Index() {
 /* -------------------- HERO -------------------- */
 function Hero() {
   return (
-    <section className="relative overflow-hidden px-6 pb-20 pt-12 lg:px-10 lg:pt-16">
+    <section className="relative overflow-hidden px-6 pb-12 pt-2 lg:px-10 lg:pb-16 lg:pt-2">
       <div className="mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-[1.05fr_1fr]">
         <div>
           <span className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-[var(--card-soft)] px-4 py-1.5 text-xs uppercase tracking-[0.2em] text-graphite">

@@ -23,7 +23,7 @@ const PRODUCT_TYPES = [
 const LIGHTING = ["No lighting", "Backlit", "Front lit", "Lightbox", "Not sure"];
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const MAX_FILES = 5;
-const MAX_TOTAL_UPLOAD_SIZE = 50 * 1024 * 1024;
+const MAX_TOTAL_UPLOAD_SIZE = 20 * 1024 * 1024;
 const QUOTE_UPLOAD_FOLDER = "quote-inquiries";
 const WEB3FORMS_ACCESS_KEY = "be15b3e9-ef26-4ec6-8459-9c779374b27f";
 const ACCEPTED_FILE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp", ".pdf", ".svg", ".ai", ".eps"];
@@ -80,46 +80,11 @@ export function QuoteForm({ defaultProduct }: { defaultProduct?: string }) {
     }
 
     setSubmitting(true);
-    const uploadedPaths: string[] = [];
     try {
-      let file_url: string | null = null;
-      let file_urls: string[] = [];
-      if (files.length > 0) {
-        for (const file of files) {
-          const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-          const path = `${QUOTE_UPLOAD_FOLDER}/${Date.now()}-${crypto.randomUUID()}-${safeName}`;
-          const { error: upErr } = await supabase.storage.from("quote-uploads").upload(path, file);
-          if (upErr) throw upErr;
-          uploadedPaths.push(path);
-        }
-
-        file_urls = uploadedPaths;
-        file_url = uploadedPaths[0] ?? null;
-      }
-
-      const { error: insErr } = await supabase.from("quote_inquiries").insert({
-        ...parsed.data,
-        business_name: parsed.data.business_name || null,
-        whatsapp_number: parsed.data.whatsapp_number || null,
-        country: parsed.data.country || null,
-        product_type: parsed.data.product_type || null,
-        size_required: parsed.data.size_required || null,
-        quantity: parsed.data.quantity || null,
-        lighting_option: parsed.data.lighting_option || null,
-        material_finish: parsed.data.material_finish || null,
-        deadline: parsed.data.deadline || null,
-        notes: parsed.data.notes || null,
-        file_url,
-        file_urls,
-      });
-      if (insErr) throw insErr;
-
-      await submitQuoteEmail(parsed.data, file_urls);
+      await submitQuoteEmail(parsed.data);
+      void persistQuoteInquiry(parsed.data, files);
       setSuccess(true);
     } catch (err) {
-      if (uploadedPaths.length > 0) {
-        await supabase.storage.from("quote-uploads").remove(uploadedPaths);
-      }
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setSubmitting(false);
@@ -227,7 +192,7 @@ function validateFiles(files: File[]) {
 
   const totalSize = files.reduce((sum, file) => sum + file.size, 0);
   if (totalSize > MAX_TOTAL_UPLOAD_SIZE) {
-    return "Your total upload size cannot exceed 50 MB.";
+    return "Your total upload size cannot exceed 20 MB.";
   }
 
   for (const file of files) {
@@ -254,7 +219,6 @@ function getFileExtension(fileName: string) {
 
 async function submitQuoteEmail(
   data: z.infer<typeof schema>,
-  fileUrls: string[],
 ) {
   const formData = new FormData();
   formData.append("access_key", WEB3FORMS_ACCESS_KEY);
@@ -262,7 +226,8 @@ async function submitQuoteEmail(
   formData.append("from_name", "Custom Logo Sign Website");
   formData.append("name", data.full_name);
   formData.append("email", data.email);
-  formData.append("message", formatEmailMessage(data, fileUrls));
+  formData.append("replyto", data.email);
+  formData.append("message", formatEmailMessage(data));
 
   if (data.business_name) formData.append("business_name", data.business_name);
   if (data.whatsapp_number) formData.append("whatsapp_number", data.whatsapp_number);
@@ -274,7 +239,6 @@ async function submitQuoteEmail(
   if (data.material_finish) formData.append("material_finish", data.material_finish);
   if (data.deadline) formData.append("deadline", data.deadline);
   if (data.notes) formData.append("notes", data.notes);
-  if (fileUrls.length > 0) formData.append("file_urls", fileUrls.join("\n"));
 
   const response = await fetch("https://api.web3forms.com/submit", {
     method: "POST",
@@ -287,7 +251,51 @@ async function submitQuoteEmail(
   }
 }
 
-function formatEmailMessage(data: z.infer<typeof schema>, fileUrls: string[]) {
+async function persistQuoteInquiry(data: z.infer<typeof schema>, files: File[]) {
+  const uploadedPaths: string[] = [];
+
+  try {
+    let file_url: string | null = null;
+    let file_urls: string[] = [];
+
+    if (files.length > 0) {
+      for (const file of files) {
+        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+        const path = `${QUOTE_UPLOAD_FOLDER}/${Date.now()}-${crypto.randomUUID()}-${safeName}`;
+        const { error: upErr } = await supabase.storage.from("quote-uploads").upload(path, file);
+        if (upErr) throw upErr;
+        uploadedPaths.push(path);
+      }
+
+      file_urls = uploadedPaths;
+      file_url = uploadedPaths[0] ?? null;
+    }
+
+    const { error: insErr } = await supabase.from("quote_inquiries").insert({
+      ...data,
+      business_name: data.business_name || null,
+      whatsapp_number: data.whatsapp_number || null,
+      country: data.country || null,
+      product_type: data.product_type || null,
+      size_required: data.size_required || null,
+      quantity: data.quantity || null,
+      lighting_option: data.lighting_option || null,
+      material_finish: data.material_finish || null,
+      deadline: data.deadline || null,
+      notes: data.notes || null,
+      file_url,
+      file_urls,
+    });
+    if (insErr) throw insErr;
+  } catch (err) {
+    if (uploadedPaths.length > 0) {
+      await supabase.storage.from("quote-uploads").remove(uploadedPaths);
+    }
+    console.error("Failed to persist quote inquiry", err);
+  }
+}
+
+function formatEmailMessage(data: z.infer<typeof schema>) {
   return [
     `Full name: ${data.full_name}`,
     `Business name: ${data.business_name || "-"}`,
@@ -301,7 +309,6 @@ function formatEmailMessage(data: z.infer<typeof schema>, fileUrls: string[]) {
     `Material / finish: ${data.material_finish || "-"}`,
     `Deadline: ${data.deadline || "-"}`,
     `Notes: ${data.notes || "-"}`,
-    `Uploaded files: ${fileUrls.length > 0 ? fileUrls.join(", ") : "-"}`,
   ].join("\n");
 }
 
