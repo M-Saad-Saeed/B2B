@@ -1,27 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import type { ComponentType, ReactNode } from "react";
-import {
-  ArrowRight,
-  ChevronLeft,
-  ChevronRight,
-  ShieldCheck,
-  Truck,
-  Package,
-  Globe2,
-  Sparkles,
-  Layers,
-  Palette,
-  Lightbulb,
-  Factory,
-  Clock,
-  PenTool,
-  Mail,
-  Instagram,
-  MapPin,
-  Check,
-  Tag,
-} from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, ShieldCheck, Truck, Package, Globe as Globe2, Sparkles, Layers, Palette, Lightbulb, Factory, Clock, PenTool, Mail, Instagram, MapPin, Check, Tag } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Logo } from "@/components/Logo";
 import { Placeholder } from "@/components/Placeholder";
@@ -550,152 +530,44 @@ function WeddingImageCarousel({ images }: { images: ProductCardImage[] }) {
 }
 
 /* -------------------- STATS -------------------- */
-const STATS = [
-  {
-    value: "500+",
-    endValue: 500,
-    label: "Businesses Served",
-    text: "Supporting brands, agencies, retailers, cafes, studios, and event businesses.",
-  },
-  {
-    value: "10,000+",
-    endValue: 10000,
-    label: "Custom Signs Produced",
-    text: "Made-to-order acrylic, backlit, UV printed, metal finish, and event signage.",
-  },
-  {
-    value: "60+",
-    endValue: 60,
-    label: "Countries Shipped",
-    text: "Worldwide delivery support through DHL, UPS, FedEx, and trusted shipping partners.",
-  },
-  {
-    value: "B2B",
-    label: "White-label & Bulk Orders",
-    text: "Fulfilment support for resellers, agencies, planners, and business suppliers.",
-  },
-];
-
 function StatsSection() {
-  const sectionRef = useRef<HTMLElement | null>(null);
-  const [hasCounted, setHasCounted] = useState(false);
-
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section || hasCounted) {
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry?.isIntersecting) {
-          return;
-        }
-
-        setHasCounted(true);
-        observer.disconnect();
-      },
-      { threshold: 0.2 },
-    );
-
-    observer.observe(section);
-
-    return () => observer.disconnect();
-  }, [hasCounted]);
-
+  const stats = [
+    {
+      value: "500+",
+      label: "Businesses Served",
+    },
+    {
+      value: "10,000+",
+      label: "Custom Signs Produced",
+    },
+    {
+      value: "60+",
+      label: "Countries Shipped",
+    },
+    {
+      value: "50+",
+      label: "B2B Business Partners",
+    },
+  ];
   return (
-    <section
-      id="stats"
-      ref={sectionRef}
-      className="relative overflow-hidden bg-[var(--card-soft)] px-6 py-20 lg:px-10"
-    >
-      <div className="absolute left-0 top-0 h-40 w-40 rounded-full bg-gold/10 blur-3xl" />
-      <div className="absolute bottom-0 right-0 h-48 w-48 rounded-full bg-gold/10 blur-3xl" />
-
-      <div className="relative mx-auto max-w-7xl">
-        <div className="mx-auto max-w-3xl text-center">
-          <span className="text-xs uppercase tracking-[0.22em] text-gold">Trusted Worldwide</span>
-
-          <h2 className="mt-4 font-display text-4xl text-graphite md:text-5xl">
-            Built for businesses, agencies, and event brands
-          </h2>
-
-          <p className="mt-5 text-base leading-relaxed text-muted-foreground md:text-lg">
-            From single branded displays to bulk white-label fulfilment, Custom Logo Sign supports
-            custom signage projects with design support, fast production, and worldwide delivery.
-          </p>
-        </div>
-
-        <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {STATS.map((stat, index) => (
-            <article
-              key={stat.label}
-              className="group animate-[statsFadeUp_0.8s_ease-out_both] rounded-2xl border border-border bg-card/90 p-7 text-center shadow-[0_18px_45px_-32px_rgba(0,0,0,0.35)] transition-all duration-300 hover:-translate-y-1 hover:border-gold/50 hover:shadow-[0_26px_70px_-35px_rgba(176,141,87,0.55)]"
-              style={{ animationDelay: `${index * 120}ms` }}
-            >
-              <div className="mx-auto mb-5 h-px w-14 bg-gradient-to-r from-transparent via-gold to-transparent transition-all duration-300 group-hover:w-20" />
-
-              <div className="font-display text-5xl leading-none text-graphite md:text-6xl">
-                {"endValue" in stat ? (
-                  <CountUpValue end={stat.endValue} suffix="+" start={hasCounted} />
-                ) : (
-                  stat.value
-                )}
-              </div>
-
-              <h3 className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-gold">
-                {stat.label}
-              </h3>
-
-              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{stat.text}</p>
-            </article>
-          ))}
-        </div>
+    <section id="stats" className="border-y border-border/70 bg-[var(--card-soft)]">
+      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-px px-6 py-7 lg:grid-cols-4 lg:px-10">
+        {stats.map((stat) => (
+          <div
+            key={stat.label}
+            className="px-4 py-5 text-center lg:border-r lg:border-border/60 last:lg:border-r-0"
+          >
+            <div className="font-display text-4xl leading-none text-graphite sm:text-5xl">
+              {stat.value}
+            </div>
+            <div className="mt-3 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-gold">
+              {stat.label}
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );
-}
-
-function CountUpValue({
-  end,
-  suffix = "",
-  start,
-}: {
-  end: number;
-  suffix?: string;
-  start: boolean;
-}) {
-  const [value, setValue] = useState(0);
-
-  useEffect(() => {
-    if (!start) {
-      return;
-    }
-
-    let frameId = 0;
-    let startTime: number | null = null;
-    const duration = 1400;
-
-    const tick = (timestamp: number) => {
-      if (startTime === null) {
-        startTime = timestamp;
-      }
-
-      const progress = Math.min((timestamp - startTime) / duration, 1);
-      const easedProgress = 1 - Math.pow(1 - progress, 3);
-      setValue(Math.round(end * easedProgress));
-
-      if (progress < 1) {
-        frameId = window.requestAnimationFrame(tick);
-      }
-    };
-
-    frameId = window.requestAnimationFrame(tick);
-
-    return () => window.cancelAnimationFrame(frameId);
-  }, [end, start]);
-
-  return `${value.toLocaleString()}${suffix}`;
 }
 
 /* -------------------- WHY US -------------------- */
