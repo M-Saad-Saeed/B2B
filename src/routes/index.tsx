@@ -20,6 +20,7 @@ import {
   Instagram,
   MapPin,
   Check,
+  Tag,
 } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Logo } from "@/components/Logo";
@@ -149,7 +150,7 @@ function Hero() {
             </a>
           </div>
 
-          <div className="mt-12 grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-4">
+          <div className="mt-12 grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-4 lg:hidden">
             {[
               ["White-label", "fulfilment"],
               ["Worldwide", "shipping"],
@@ -165,6 +166,10 @@ function Hero() {
               </div>
             ))}
           </div>
+
+          <div className="mt-12 hidden lg:block">
+            <DesktopHeroFeatures />
+          </div>
         </div>
 
         <div className="relative">
@@ -177,7 +182,7 @@ function Hero() {
               className="aspect-[4/5] w-full object-cover object-center"
             />
           </div>
-          <div className="absolute -bottom-6 left-6 right-6 hidden rounded-xl border border-border bg-card/95 p-4 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.2)] backdrop-blur md:flex md:items-center md:gap-4">
+          <div className="absolute -bottom-0 left-6 right-6 hidden rounded-xl border border-border bg-card/95 p-4 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.2)] backdrop-blur md:flex md:items-center md:gap-4">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-graphite text-primary-foreground">
               <Sparkles className="h-4 w-4 text-gold" />
             </div>
@@ -202,7 +207,7 @@ function TrustStrip() {
     { Icon: Globe2, label: "Worldwide delivery" },
   ];
   return (
-    <section className="border-y border-border/70 bg-[var(--card-soft)]">
+    <section className="border-y border-border/70 bg-[var(--card-soft)] lg:hidden">
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-6 py-8 sm:grid-cols-3 lg:grid-cols-5 lg:px-10">
         {items.map(({ Icon, label }) => (
           <div key={label} className="flex items-center gap-3">
@@ -212,6 +217,32 @@ function TrustStrip() {
         ))}
       </div>
     </section>
+  );
+}
+
+function DesktopHeroFeatures() {
+  const items = [
+    { Icon: Tag, title: "White-label", subtitle: "fulfilment" },
+    { Icon: Globe2, title: "Worldwide", subtitle: "shipping" },
+    { Icon: Truck, title: "Shipping", subtitle: "Channels DHL · UPS · FedEx" },
+    { Icon: Package, title: "Bulk order", subtitle: "support" },
+    { Icon: PenTool, title: "Custom quotations", subtitle: "on demand" },
+    { Icon: Clock, title: "Production", subtitle: "1-3 Days" },
+    { Icon: Palette, title: "Design support", subtitle: "available" },
+  ];
+
+  return (
+    <div className="grid max-w-5xl grid-cols-4 gap-x-10 gap-y-12">
+      {items.map(({ Icon, title, subtitle }) => (
+        <div key={title} className="flex items-start gap-4">
+          <Icon className="mt-0.5 h-7 w-7 shrink-0 text-gold" strokeWidth={1.3} />
+          <div className="text-left leading-[1.15]">
+            <div className="text-[0.8rem] text-graphite">{title}</div>
+            <div className="mt-1 text-[0.8rem] text-muted-foreground">{subtitle}</div>
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }
 
