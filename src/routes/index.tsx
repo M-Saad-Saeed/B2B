@@ -531,34 +531,68 @@ function WeddingImageCarousel({ images }: { images: ProductCardImage[] }) {
 
 /* -------------------- STATS -------------------- */
 function StatsSection() {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [hasCounted, setHasCounted] = useState(false);
   const stats = [
     {
       value: "500+",
+      endValue: 500,
       label: "Businesses Served",
     },
     {
       value: "10,000+",
+      endValue: 10000,
       label: "Custom Signs Produced",
     },
     {
       value: "60+",
+      endValue: 60,
       label: "Countries Shipped",
     },
     {
       value: "50+",
+      endValue: 50,
       label: "B2B Business Partners",
     },
   ];
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section || hasCounted) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) {
+          return;
+        }
+
+        setHasCounted(true);
+        observer.disconnect();
+      },
+      { threshold: 0.25 },
+    );
+
+    observer.observe(section);
+
+    return () => observer.disconnect();
+  }, [hasCounted]);
+
   return (
-    <section id="stats" className="border-y border-border/70 bg-[var(--card-soft)]">
-      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-px px-6 py-7 lg:grid-cols-4 lg:px-10">
+    <section
+      id="stats"
+      ref={sectionRef}
+      className="border-y border-border/70 bg-[var(--card-soft)]"
+    >
+      <div className="mx-auto flex max-w-6xl gap-0.5 overflow-x-auto px-3 py-5 sm:px-6 lg:grid lg:grid-cols-4 lg:gap-px lg:px-10 lg:py-7">
         {stats.map((stat) => (
           <div
             key={stat.label}
-            className="px-4 py-5 text-center lg:border-r lg:border-border/60 last:lg:border-r-0"
+            className="min-w-[9rem] flex-1 px-2 py-4 text-center lg:min-w-0 lg:px-4 lg:py-5 lg:border-r lg:border-border/60 last:lg:border-r-0"
           >
             <div className="font-display text-4xl leading-none text-graphite sm:text-5xl">
-              {stat.value}
+              <CountUpValue end={stat.endValue} suffix="+" start={hasCounted} />
             </div>
             <div className="mt-3 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-gold">
               {stat.label}
@@ -568,6 +602,48 @@ function StatsSection() {
       </div>
     </section>
   );
+}
+
+function CountUpValue({
+  end,
+  suffix = "",
+  start,
+}: {
+  end: number;
+  suffix?: string;
+  start: boolean;
+}) {
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    if (!start) {
+      return;
+    }
+
+    let frameId = 0;
+    let startTime: number | null = null;
+    const duration = 1400;
+
+    const tick = (timestamp: number) => {
+      if (startTime === null) {
+        startTime = timestamp;
+      }
+
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      const easedProgress = 1 - Math.pow(1 - progress, 3);
+      setValue(Math.round(end * easedProgress));
+
+      if (progress < 1) {
+        frameId = window.requestAnimationFrame(tick);
+      }
+    };
+
+    frameId = window.requestAnimationFrame(tick);
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [end, start]);
+
+  return `${value.toLocaleString()}${suffix}`;
 }
 
 /* -------------------- WHY US -------------------- */
