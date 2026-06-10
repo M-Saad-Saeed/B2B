@@ -168,7 +168,7 @@ function Hero() {
         </div>
 
         <div className="relative">
-          <div className="absolute -left-6 -top-6 hidden h-32 w-32 rounded-full border border-gold/30 lg:block" />
+          <div className="absolute -left-6 -top-[8.75px] hidden h-32 w-32 rounded-full border border-gold/30 lg:block" />
           <div className="absolute -bottom-8 -right-6 hidden h-40 w-40 rounded-full border border-gold/20 lg:block" />
           <div className="overflow-hidden rounded-[2rem] border border-gold/20 bg-card shadow-[0_30px_80px_-38px_rgba(0,0,0,0.32)]">
             <img
