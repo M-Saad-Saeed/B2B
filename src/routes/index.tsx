@@ -150,21 +150,8 @@ function Hero() {
             </a>
           </div>
 
-          <div className="mt-12 grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-4 lg:hidden">
-            {[
-              ["White-label", "fulfilment"],
-              ["Worldwide", "shipping"],
-              ["Shipping Channels", "DHL · UPS · FedEx"],
-              ["Bulk order", "support"],
-            ].map(([a, b]) => (
-              <div key={a} className="flex items-start gap-2">
-                <Check className="mt-1 h-3.5 w-3.5 text-gold" strokeWidth={2} />
-                <div className="text-xs leading-tight text-muted-foreground">
-                  <div className="text-graphite">{a}</div>
-                  <div>{b}</div>
-                </div>
-              </div>
-            ))}
+          <div className="mt-12 lg:hidden">
+            <MobileHeroFeatures />
           </div>
 
           <div className="mt-12 hidden lg:block">
@@ -207,7 +194,7 @@ function TrustStrip() {
     { Icon: Globe2, label: "Worldwide delivery" },
   ];
   return (
-    <section className="border-y border-border/70 bg-[var(--card-soft)] lg:hidden">
+    <section className="hidden border-y border-border/70 bg-[var(--card-soft)] lg:hidden">
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-6 py-8 sm:grid-cols-3 lg:grid-cols-5 lg:px-10">
         {items.map(({ Icon, label }) => (
           <div key={label} className="flex items-center gap-3">
@@ -220,12 +207,38 @@ function TrustStrip() {
   );
 }
 
+function MobileHeroFeatures() {
+  const items = [
+    { Icon: Tag, title: "White-label", subtitle: "fulfilment" },
+    { Icon: Globe2, title: "Worldwide", subtitle: "shipping" },
+    { Icon: Truck, title: "Shipping Channels", subtitle: "DHL · UPS · FedEx" },
+    { Icon: Package, title: "Bulk order", subtitle: "discounts" },
+    { Icon: PenTool, title: "Custom quotations", subtitle: "on demand" },
+    { Icon: Clock, title: "Production", subtitle: "1-3 Days" },
+    { Icon: Palette, title: "Design support", subtitle: "available" },
+  ];
+
+  return (
+    <div className="grid grid-cols-3 gap-x-4 gap-y-8">
+      {items.map(({ Icon, title, subtitle }) => (
+        <div key={title} className="flex items-start gap-3">
+          <Icon className="mt-0.5 h-6 w-6 shrink-0 text-gold" strokeWidth={1.6} />
+          <div className="leading-tight">
+           <div className="text-[0.60rem] text-graphite">{title}</div>
+            <div className="mt-1 text-[0.60rem] text-muted-foreground">{subtitle}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function DesktopHeroFeatures() {
   const items = [
     { Icon: Tag, title: "White-label", subtitle: "fulfilment" },
     { Icon: Globe2, title: "Worldwide", subtitle: "shipping" },
     { Icon: Truck, title: "Shipping", subtitle: "Channels DHL · UPS · FedEx" },
-    { Icon: Package, title: "Bulk order", subtitle: "support" },
+    { Icon: Package, title: "Bulk order", subtitle: "discounts" },
     { Icon: PenTool, title: "Custom quotations", subtitle: "on demand" },
     { Icon: Clock, title: "Production", subtitle: "1-3 Days" },
     { Icon: Palette, title: "Design support", subtitle: "available" },
