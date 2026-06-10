@@ -116,8 +116,42 @@ function Index() {
 /* -------------------- HERO -------------------- */
 function Hero() {
   return (
-    <section className="relative overflow-hidden px-6 pb-12 pt-2 lg:px-10 lg:pb-16 lg:pt-2">
-      <div className="mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-[1.05fr_1fr]">
+    <section className="relative overflow-hidden px-6 pb-12 pt-0 lg:px-10 lg:pb-16 lg:pt-2">
+      <div className="-mx-6 lg:hidden">
+        <div className="relative overflow-hidden">
+          <img
+            src={heroHeader}
+            alt="Premium custom acrylic and illuminated signage display"
+            className="aspect-[4/5] w-full object-cover object-center"
+          />
+          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/45 to-transparent px-6 pb-6 pt-16 text-center text-white">
+            <h1 className="mx-auto max-w-[24ch] font-display text-[2.7rem] leading-[0.95]">
+              Custom Signs for Brands, Resellers &amp; Businesses.
+            </h1>
+          </div>
+        </div>
+
+        <div className="px-6 pb-4 pt-5">
+          <a
+            href="#quote"
+            className="quote-cta-animated group inline-flex w-full items-center justify-center gap-2 rounded-full bg-graphite px-7 py-4 text-sm font-semibold uppercase tracking-[0.08em] text-primary-foreground transition-all hover:bg-graphite/85 hover:shadow-[0_12px_30px_-12px_rgba(0,0,0,0.45)]"
+          >
+            Request a Quote
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          </a>
+        </div>
+
+        <div className="px-6 pt-4">
+          <h2 className="text-center font-display text-[2.2rem] text-graphite">
+            Why Partner With Us
+          </h2>
+          <div className="mt-6">
+            <MobileHeroFeatures />
+          </div>
+        </div>
+      </div>
+
+      <div className="mx-auto hidden max-w-7xl items-center gap-14 lg:grid lg:grid-cols-[1.05fr_1fr]">
         <div>
           <span className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-[var(--card-soft)] px-4 py-1.5 text-xs uppercase tracking-[0.2em] text-graphite">
             <span className="h-1.5 w-1.5 rounded-full bg-gold" />
@@ -210,7 +244,6 @@ function TrustStrip() {
 function MobileHeroFeatures() {
   const items = [
     { Icon: Tag, title: "White-label", subtitle: "fulfilment" },
-    { Icon: Globe2, title: "Worldwide", subtitle: "shipping" },
     { Icon: Truck, title: "Shipping Channels", subtitle: "DHL · UPS · FedEx" },
     { Icon: Package, title: "Bulk order", subtitle: "discounts" },
     { Icon: PenTool, title: "Custom quotations", subtitle: "on demand" },
@@ -236,7 +269,6 @@ function MobileHeroFeatures() {
 function DesktopHeroFeatures() {
   const items = [
     { Icon: Tag, title: "White-label", subtitle: "fulfilment" },
-    { Icon: Globe2, title: "Worldwide", subtitle: "shipping" },
     { Icon: Truck, title: "Shipping", subtitle: "Channels DHL · UPS · FedEx" },
     { Icon: Package, title: "Bulk order", subtitle: "discounts" },
     { Icon: PenTool, title: "Custom quotations", subtitle: "on demand" },
@@ -245,7 +277,7 @@ function DesktopHeroFeatures() {
   ];
 
   return (
-    <div className="grid max-w-5xl grid-cols-4 gap-x-10 gap-y-12">
+    <div className="grid max-w-4xl grid-cols-3 gap-x-10 gap-y-12">
       {items.map(({ Icon, title, subtitle }) => (
         <div key={title} className="flex items-start gap-4">
           <Icon className="mt-0.5 h-7 w-7 shrink-0 text-gold" strokeWidth={1.3} />
@@ -679,7 +711,7 @@ function WhyUs() {
     { Icon: Clock, label: "Fast production" },
   ];
   return (
-    <section className="px-6 py-24 lg:px-10">
+    <section className="hidden px-6 py-24 lg:block lg:px-10">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-14 lg:grid-cols-[1fr_1.2fr] lg:items-start">
           <div className="lg:sticky lg:top-32">
