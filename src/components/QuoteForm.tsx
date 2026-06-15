@@ -1,6 +1,6 @@
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 import { z } from "zod";
-import { CheckCircle2, Upload, Loader2 } from "lucide-react";
+import { ArrowRight, CheckCircle2, Upload, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 
@@ -93,7 +93,7 @@ export function QuoteForm({ defaultProduct }: { defaultProduct?: string }) {
 
   if (success) {
     return (
-      <div className="rounded-2xl border border-gold/40 bg-card p-10 text-center shadow-[0_20px_60px_-30px_rgba(0,0,0,0.25)]">
+      <div className="rounded-2xl border border-gold/30 bg-gold/[0.05] p-6 text-center lg:p-10">
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-gold/50 bg-[var(--card-soft)]">
           <CheckCircle2 className="h-7 w-7 text-gold" strokeWidth={1.25} />
         </div>
@@ -116,58 +116,71 @@ export function QuoteForm({ defaultProduct }: { defaultProduct?: string }) {
   return (
     <form
       onSubmit={onSubmit}
-      className="quote-orbit rounded-2xl border border-border bg-card p-6 shadow-[0_20px_60px_-30px_rgba(0,0,0,0.18)] md:p-10"
+      className="quote-orbit rounded-2xl border border-border bg-card p-4 sm:p-5 lg:rounded-[2rem] lg:p-10 lg:shadow-[0_20px_60px_-30px_rgba(0,0,0,0.18)]"
     >
-      <div className="grid gap-5 md:grid-cols-2">
-        <Field label="Full name *" name="full_name" required />
-        <Field label="Business name" name="business_name" />
-        <Field label="Email *" name="email" type="email" required />
-        <Field label="WhatsApp number" name="whatsapp_number" placeholder="+1 ..." />
-        <Field label="Country" name="country" />
-        <Select
-          label="Product type"
-          name="product_type"
-          defaultValue={defaultProduct}
-          options={PRODUCT_TYPES}
-        />
-        <Field label="Size required" name="size_required" placeholder='e.g. 24" x 8"' />
-        <Field label="Quantity" name="quantity" placeholder="e.g. 50" />
-        <Select label="Lighting option" name="lighting_option" options={LIGHTING} />
-        <Field
-          label="Material / finish preference"
-          name="material_finish"
-          placeholder="e.g. brushed gold acrylic"
-        />
-        <Field label="Deadline" name="deadline" placeholder="e.g. in 3 weeks" />
-        <FileField files={files} setFiles={setFiles} setError={setError} />
-      </div>
+      <div className="space-y-6 lg:space-y-8">
+        <FormGroup number="01" title="Contact Details">
+          <div className="grid gap-4 lg:grid-cols-2 lg:gap-5">
+            <Field label="Full name *" name="full_name" required />
+            <Field label="Business name" name="business_name" />
+            <Field label="Email *" name="email" type="email" required />
+            <Field label="WhatsApp number" name="whatsapp_number" placeholder="+1 ..." />
+            <Field label="Country" name="country" />
+          </div>
+        </FormGroup>
 
-      <div className="mt-5">
-        <label className="mb-2 block text-xs uppercase tracking-[0.18em] text-muted-foreground">
-          Notes / message
-        </label>
-        <textarea
-          name="notes"
-          rows={4}
-          className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm transition-colors focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20"
-          placeholder="Tell us about your project, colours, finishes, mounting, brand details..."
-        />
+        <FormGroup number="02" title="Project Details">
+          <div className="grid gap-4 lg:grid-cols-2 lg:gap-5">
+            <Select
+              label="Product type"
+              name="product_type"
+              defaultValue={defaultProduct}
+              options={PRODUCT_TYPES}
+            />
+            <Field label="Size required" name="size_required" placeholder='e.g. 24" x 8"' />
+            <Field label="Quantity" name="quantity" placeholder="e.g. 50" />
+            <Select label="Lighting option" name="lighting_option" options={LIGHTING} />
+            <Field
+              label="Material / finish preference"
+              name="material_finish"
+              placeholder="e.g. brushed gold acrylic"
+            />
+            <Field label="Deadline" name="deadline" placeholder="e.g. in 3 weeks" />
+          </div>
+        </FormGroup>
+
+        <FormGroup number="03" title="Files & References">
+          <FileField files={files} setFiles={setFiles} setError={setError} />
+        </FormGroup>
+
+        <FormGroup number="04" title="Additional Notes">
+          <div className="space-y-1.5">
+            <label className="mb-2 block text-sm font-medium text-graphite">Notes / message</label>
+            <textarea
+              name="notes"
+              rows={4}
+              className="min-h-32 w-full resize-y rounded-xl border border-border bg-background px-4 py-3 text-base leading-6 text-graphite outline-none transition focus:border-gold/60 focus:ring-2 focus:ring-gold/10"
+              placeholder="Tell us about your project, colours, finishes, mounting, brand details..."
+            />
+          </div>
+        </FormGroup>
       </div>
 
       {error && (
-        <p className="mt-4 rounded-md border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+        <div className="mt-5 rounded-xl border border-destructive/25 bg-destructive/5 px-4 py-3 text-sm leading-6 text-destructive">
           {error}
-        </p>
+        </div>
       )}
 
       <div className="mt-7 flex flex-col gap-3 sm:flex-row">
         <button
           type="submit"
           disabled={submitting}
-          className="quote-button-glow quote-cta-animated inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-graphite px-6 py-3.5 text-sm font-medium text-primary-foreground transition-all hover:bg-graphite/85 hover:shadow-[0_18px_35px_-18px_rgba(176,141,87,0.55)] disabled:opacity-60"
+          className="quote-button-glow quote-cta-animated inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-graphite px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 sm:flex-1"
         >
           {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
-          {submitting ? "Submitting..." : "Request a Quote"}
+          {submitting ? "Sending your request..." : "Submit Quote Request"}
+          {!submitting && <ArrowRight className="h-4 w-4" strokeWidth={1.8} />}
         </button>
         <a
           href={WA_URL}
@@ -178,10 +191,35 @@ export function QuoteForm({ defaultProduct }: { defaultProduct?: string }) {
           <WhatsAppIcon className="h-5 w-5" /> Chat on WhatsApp
         </a>
       </div>
-      <p className="mt-4 text-center text-xs text-muted-foreground">
-        We respond to most inquiries within 12 business hours.
+      <p className="mt-3 text-center text-xs leading-5 text-muted-foreground">
+        We usually respond within one business day. Your files are used only to prepare your
+        quotation.
       </p>
     </form>
+  );
+}
+
+function FormGroup({
+  number,
+  title,
+  children,
+}: {
+  number: string;
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <section>
+      <div className="mb-4 flex items-center gap-3">
+        <span className="flex h-7 w-7 items-center justify-center rounded-full border border-gold/30 bg-gold/10 text-xs font-semibold text-gold">
+          {number}
+        </span>
+
+        <h3 className="font-display text-lg text-graphite">{title}</h3>
+      </div>
+
+      {children}
+    </section>
   );
 }
 
@@ -326,16 +364,14 @@ function Field({
   required?: boolean;
 }) {
   return (
-    <div>
-      <label className="mb-2 block text-xs uppercase tracking-[0.18em] text-muted-foreground">
-        {label}
-      </label>
+    <div className="space-y-1.5">
+      <label className="mb-2 block text-sm font-medium text-graphite">{label}</label>
       <input
         name={name}
         type={type}
         required={required}
         placeholder={placeholder}
-        className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm transition-colors focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20"
+        className="h-12 w-full rounded-xl border border-border bg-background px-4 text-base text-graphite outline-none transition focus:border-gold/60 focus:ring-2 focus:ring-gold/10 lg:h-12"
       />
     </div>
   );
@@ -353,14 +389,12 @@ function Select({
   defaultValue?: string;
 }) {
   return (
-    <div>
-      <label className="mb-2 block text-xs uppercase tracking-[0.18em] text-muted-foreground">
-        {label}
-      </label>
+    <div className="space-y-1.5">
+      <label className="mb-2 block text-sm font-medium text-graphite">{label}</label>
       <select
         name={name}
         defaultValue={defaultValue ?? ""}
-        className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm transition-colors focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20"
+        className="h-12 w-full rounded-xl border border-border bg-background px-4 text-base text-graphite outline-none transition focus:border-gold/60 focus:ring-2 focus:ring-gold/10 lg:h-12"
       >
         <option value="">Select an option</option>
         {options.map((o) => (
@@ -382,16 +416,26 @@ function FileField({
   setFiles: (files: File[]) => void;
   setError: (error: string | null) => void;
 }) {
-  const fileNames = files.length > 0 ? files.map((file) => file.name).join(", ") : null;
-
   return (
-    <div>
-      <label className="mb-2 block text-xs uppercase tracking-[0.18em] text-muted-foreground">
-        Upload logo / design
-      </label>
-      <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-gold/40 bg-[var(--card-soft)] px-4 py-3 text-sm text-muted-foreground transition-colors hover:border-gold hover:text-graphite">
+    <div className="rounded-2xl border border-dashed border-gold/35 bg-gold/[0.04] p-4 lg:p-6">
+      <div className="flex items-start gap-3">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gold/10 text-gold">
+          <Upload className="h-4 w-4" strokeWidth={1.8} />
+        </span>
+
+        <div className="min-w-0">
+          <div className="text-sm font-semibold text-graphite">Upload logo or reference files</div>
+
+          <p className="mt-1 text-xs leading-5 text-muted-foreground">
+            Upload your logo, reference image, or design file. Max 10 MB per file. Up to 5 files.
+            Accepted formats: JPG, PNG, WEBP, PDF, SVG, AI, EPS.
+          </p>
+        </div>
+      </div>
+
+      <label className="mt-4 flex cursor-pointer items-center justify-center gap-3 rounded-xl border border-border bg-background px-4 py-3 text-sm font-medium text-graphite transition-colors hover:border-gold/60">
         <Upload className="h-4 w-4 text-gold" strokeWidth={1.5} />
-        <span className="truncate">{fileNames ?? "Choose up to 5 files"}</span>
+        <span>Choose up to 5 files</span>
         <input
           type="file"
           multiple
@@ -413,10 +457,21 @@ function FileField({
           }}
         />
       </label>
-      <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-        Upload your logo, reference image, or design file. Max 10 MB per file. Up to 5 files.
-        Accepted formats: JPG, JPEG, PNG, WEBP, PDF, SVG, AI, EPS.
-      </p>
+
+      {files.length > 0 && (
+        <div className="mt-3 space-y-2">
+          {files.map((file) => (
+            <div
+              key={`${file.name}-${file.lastModified}`}
+              className="flex items-center justify-between gap-3 rounded-xl border border-border bg-background px-3 py-2.5"
+            >
+              <div className="min-w-0">
+                <p className="truncate text-sm font-medium text-graphite">{file.name}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

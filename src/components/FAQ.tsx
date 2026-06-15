@@ -53,10 +53,28 @@ const FAQS = [
 ];
 
 export function FAQ() {
+  const scrollToQuote = () => {
+    document.getElementById("quote")?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <section id="faq" className="px-6 py-12 lg:px-10 lg:py-24">
       <div className="mx-auto max-w-4xl">
-        <div className="text-center">
+        <div className="mx-auto max-w-3xl text-center lg:hidden">
+          <div className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-gold">
+            FAQ
+          </div>
+
+          <h2 className="mt-3 font-display text-3xl leading-tight text-graphite">
+            Common questions.
+          </h2>
+
+          <p className="mt-3 text-sm leading-6 text-muted-foreground">
+            Answers about custom orders, artwork, production, shipping, and wholesale projects.
+          </p>
+        </div>
+
+        <div className="hidden text-center lg:block">
           <span className="text-[0.68rem] uppercase tracking-[0.2em] text-gold lg:text-xs lg:tracking-[0.22em]">
             FAQ
           </span>
@@ -80,9 +98,9 @@ export function FAQ() {
             <AccordionItem
               key={item.q}
               value={`faq-${i}`}
-              className="overflow-hidden rounded-2xl border border-border bg-[var(--card-soft)] px-4 transition-colors hover:border-gold/40 data-[state=open]:border-gold/50 data-[state=open]:bg-card lg:rounded-xl lg:px-5"
+              className="overflow-hidden rounded-2xl border border-border bg-card px-4 transition-colors hover:border-gold/40 data-[state=open]:border-gold/50 data-[state=open]:bg-card lg:rounded-xl lg:bg-[var(--card-soft)] lg:px-5"
             >
-              <AccordionTrigger className="py-4 font-display text-base text-graphite hover:no-underline md:text-xl lg:py-5">
+              <AccordionTrigger className="gap-4 py-4 text-left font-display text-base leading-snug text-graphite hover:no-underline md:text-lg lg:py-5 lg:text-xl">
                 <span className="flex items-start gap-3 text-left lg:gap-4">
                   <span className="mt-1 font-display text-xs text-gold">
                     {String(i + 1).padStart(2, "0")}
@@ -97,12 +115,23 @@ export function FAQ() {
           ))}
         </Accordion>
 
-        <div className="mt-10 rounded-2xl border border-gold/30 bg-card p-5 text-center shadow-[0_20px_60px_-30px_rgba(0,0,0,0.18)] md:p-10 lg:mt-14">
-          <h3 className="font-display text-2xl text-graphite md:text-3xl">Still have questions?</h3>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground lg:mt-3 lg:text-base lg:leading-normal">
+        <div className="mt-8 rounded-2xl border border-gold/30 bg-card p-5 text-center lg:mt-14 lg:p-10 lg:shadow-[0_20px_60px_-30px_rgba(0,0,0,0.18)]">
+          <h3 className="font-display text-2xl leading-tight text-graphite lg:text-3xl">
+            Still have questions?
+          </h3>
+          <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-muted-foreground lg:mt-3 lg:text-base lg:leading-normal">
             Send us your requirements and we’ll guide you.
           </p>
-          <div className="mt-5 flex flex-col items-center justify-center gap-3 sm:flex-row lg:mt-7">
+          <button
+            type="button"
+            onClick={scrollToQuote}
+            className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-graphite px-5 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90 sm:w-auto lg:hidden"
+          >
+            Request a Quote
+            <ArrowRight className="h-4 w-4" strokeWidth={1.8} />
+          </button>
+
+          <div className="mt-5 hidden flex-col items-center justify-center gap-3 sm:flex-row lg:mt-7 lg:flex">
             <a
               href="#quote"
               className="quote-cta-animated inline-flex items-center justify-center gap-2 rounded-full bg-graphite px-7 py-3.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-graphite/85"

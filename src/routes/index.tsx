@@ -1042,27 +1042,80 @@ function HowItWorks() {
   return (
     <section id="how" className="px-6 py-12 lg:px-10 lg:py-24">
       <div className="mx-auto max-w-7xl">
-        <SectionHeader
-          eyebrow="Process"
-          title="Simple 4-step order process"
-          subtitle="From the first message to delivery — clear, considered, and on-schedule."
-        />
-        <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4 lg:gap-px lg:overflow-hidden lg:rounded-2xl lg:border lg:border-border lg:bg-border">
-          {STEPS.map((s) => (
-            <div
-              key={s.n}
-              className="rounded-2xl border border-border bg-card p-4 lg:rounded-none lg:border-0 lg:p-7"
-            >
-              <div className="flex items-baseline gap-3">
-                <span className="font-display text-3xl text-gold lg:text-4xl">{s.n}</span>
-                <div className="h-px flex-1 bg-gold/30" />
+        <div className="lg:hidden">
+          <div className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-gold">
+            How It Works
+          </div>
+
+          <h2 className="mt-3 font-display text-3xl leading-tight text-graphite">
+            From idea to delivery.
+          </h2>
+
+          <p className="mt-3 text-sm leading-6 text-muted-foreground">
+            A straightforward process for custom, wholesale, and white-label signage.
+          </p>
+
+          <div className="mt-8 space-y-0">
+            {STEPS.map((step, index) => {
+              const isLast = index === STEPS.length - 1;
+
+              return (
+                <div key={step.n} className="relative flex gap-4">
+                  <div className="flex w-10 shrink-0 flex-col items-center">
+                    <div className="relative z-10 flex h-10 w-10 items-center justify-center rounded-full border border-gold/40 bg-gold/10 font-display text-sm text-gold">
+                      {step.n}
+                    </div>
+
+                    {!isLast && <div className="min-h-16 w-px flex-1 bg-border" />}
+                  </div>
+
+                  <div className={`min-w-0 flex-1 ${isLast ? "pb-0" : "pb-7"}`}>
+                    <h3 className="pt-1 font-display text-xl leading-tight text-graphite">
+                      {step.title}
+                    </h3>
+
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">{step.desc}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <button
+            type="button"
+            onClick={() =>
+              document.getElementById("quote")?.scrollIntoView({ behavior: "smooth" })
+            }
+            className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-graphite px-5 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
+          >
+            Request a Quote
+            <ArrowRight className="h-4 w-4" strokeWidth={1.8} />
+          </button>
+        </div>
+
+        <div className="hidden lg:block">
+          <SectionHeader
+            eyebrow="Process"
+            title="Simple 4-step order process"
+            subtitle="From the first message to delivery — clear, considered, and on-schedule."
+          />
+          <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4 lg:gap-px lg:overflow-hidden lg:rounded-2xl lg:border lg:border-border lg:bg-border">
+            {STEPS.map((s) => (
+              <div
+                key={s.n}
+                className="rounded-2xl border border-border bg-card p-4 lg:rounded-none lg:border-0 lg:p-7"
+              >
+                <div className="flex items-baseline gap-3">
+                  <span className="font-display text-3xl text-gold lg:text-4xl">{s.n}</span>
+                  <div className="h-px flex-1 bg-gold/30" />
+                </div>
+                <h3 className="mt-3 font-display text-xl text-graphite lg:mt-5">{s.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground lg:mt-3 lg:leading-relaxed">
+                  {s.desc}
+                </p>
               </div>
-              <h3 className="mt-3 font-display text-xl text-graphite lg:mt-5">{s.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground lg:mt-3 lg:leading-relaxed">
-                {s.desc}
-              </p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -1125,7 +1178,7 @@ function B2B() {
 /* -------------------- QUOTE -------------------- */
 function QuoteSection() {
   return (
-    <section id="quote" className="px-6 py-24 lg:px-10">
+    <section id="quote" className="px-6 py-12 lg:px-10 lg:py-24">
       <div className="mx-auto max-w-5xl">
         <SectionHeader
           eyebrow="Request a Quote"
