@@ -54,48 +54,55 @@ const FAQS = [
 
 export function FAQ() {
   return (
-    <section id="faq" className="px-6 py-24 lg:px-10">
+    <section id="faq" className="px-6 py-12 lg:px-10 lg:py-24">
       <div className="mx-auto max-w-4xl">
         <div className="text-center">
-          <span className="text-xs uppercase tracking-[0.22em] text-gold">FAQ</span>
-          <h2 className="mt-4 font-display text-4xl text-graphite md:text-5xl">
+          <span className="text-[0.68rem] uppercase tracking-[0.2em] text-gold lg:text-xs lg:tracking-[0.22em]">
+            FAQ
+          </span>
+          <h2 className="mt-3 font-display text-3xl text-graphite lg:mt-4 lg:text-5xl">
             Frequently Asked Questions
           </h2>
-          <p className="mx-auto mt-5 max-w-2xl leading-relaxed text-muted-foreground">
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-muted-foreground lg:mt-5 lg:text-base lg:leading-relaxed">
             Answers to common questions about custom signage, wholesale orders, white-label
             fulfilment, and worldwide shipping.
           </p>
-          <div className="gold-divider mx-auto mt-8 w-24" />
+          <div className="gold-divider mx-auto mt-5 w-24 lg:mt-8" />
         </div>
 
-        <Accordion type="single" collapsible defaultValue="faq-0" className="mt-12 space-y-3">
+        <Accordion
+          type="single"
+          collapsible
+          defaultValue="faq-0"
+          className="mt-8 space-y-3 lg:mt-12"
+        >
           {FAQS.map((item, i) => (
             <AccordionItem
               key={item.q}
               value={`faq-${i}`}
-              className="overflow-hidden rounded-xl border border-border bg-[var(--card-soft)] px-5 transition-colors hover:border-gold/40 data-[state=open]:border-gold/50 data-[state=open]:bg-card"
+              className="overflow-hidden rounded-2xl border border-border bg-[var(--card-soft)] px-4 transition-colors hover:border-gold/40 data-[state=open]:border-gold/50 data-[state=open]:bg-card lg:rounded-xl lg:px-5"
             >
-              <AccordionTrigger className="py-5 font-display text-lg text-graphite hover:no-underline md:text-xl">
-                <span className="flex items-start gap-4 text-left">
+              <AccordionTrigger className="py-4 font-display text-base text-graphite hover:no-underline lg:py-5 lg:text-xl">
+                <span className="flex items-start gap-3 text-left lg:gap-4">
                   <span className="mt-1 font-display text-xs text-gold">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   {item.q}
                 </span>
               </AccordionTrigger>
-              <AccordionContent className="pb-5 pl-10 pr-2 text-sm leading-relaxed text-muted-foreground md:text-base">
+              <AccordionContent className="pb-4 pl-8 pr-1 text-sm leading-6 text-muted-foreground lg:pb-5 lg:pl-10 lg:pr-2 lg:text-base lg:leading-relaxed">
                 {item.a}
               </AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
 
-        <div className="mt-14 rounded-2xl border border-gold/30 bg-card p-8 text-center shadow-[0_20px_60px_-30px_rgba(0,0,0,0.18)] md:p-10">
-          <h3 className="font-display text-2xl text-graphite md:text-3xl">Still have questions?</h3>
-          <p className="mt-3 text-muted-foreground">
+        <div className="mt-10 rounded-2xl border border-gold/30 bg-card p-5 text-center shadow-[0_20px_60px_-30px_rgba(0,0,0,0.18)] lg:mt-14 lg:p-10">
+          <h3 className="font-display text-2xl text-graphite lg:text-3xl">Still have questions?</h3>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground lg:mt-3 lg:text-base lg:leading-normal">
             Send us your requirements and we’ll guide you.
           </p>
-          <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <div className="mt-5 flex flex-col items-center justify-center gap-3 sm:flex-row lg:mt-7">
             <a
               href="#quote"
               className="quote-cta-animated inline-flex items-center justify-center gap-2 rounded-full bg-graphite px-7 py-3.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-graphite/85"

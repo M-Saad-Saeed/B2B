@@ -1,10 +1,26 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import type { ComponentType, ReactNode } from "react";
-import { ArrowRight, ChevronLeft, ChevronRight, ShieldCheck, Truck, Package, Globe as Globe2, Sparkles, Layers, Palette, Lightbulb, Factory, Clock, PenTool, Mail, Instagram, MapPin, Check, Tag } from "lucide-react";
+import {
+  ArrowRight,
+  Check,
+  Clock,
+  Factory,
+  Globe as Globe2,
+  Instagram,
+  Layers,
+  Mail,
+  MapPin,
+  Package,
+  Palette,
+  PenTool,
+  ShieldCheck,
+  Sparkles,
+  Tag,
+  Truck,
+} from "lucide-react";
 import { Header } from "@/components/Header";
 import { Logo } from "@/components/Logo";
-import { Placeholder } from "@/components/Placeholder";
 import { QuoteForm } from "@/components/QuoteForm";
 import { FAQ } from "@/components/FAQ";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
@@ -22,34 +38,9 @@ import uvPrintedSign from "@/assets/products/uv-printed-sign.png";
 import weddingAcrylicSign from "@/assets/products/wedding-acrylic-sign.jpg";
 import weddingSeatingSign from "@/assets/products/wedding-seating-sign.jpg";
 
-type ProductCardImage = {
-  src: string;
-  alt: string;
-};
-
-type ProductCard = {
-  title: string;
-  placeholder: string;
-  desc: string;
-  image?: string;
-  imageAlt?: string;
-  carouselImages?: ProductCardImage[];
-};
-
 const WA_URL = "https://wa.me/14304314377";
 const INSTAGRAM = "https://www.instagram.com/custom_logo_signs_/";
 const EMAIL = "support@customlogosigns.com";
-
-const WEDDING_CARD_IMAGES: ProductCardImage[] = [
-  {
-    src: weddingAcrylicSign,
-    alt: "Wedding acrylic welcome sign",
-  },
-  {
-    src: weddingSeatingSign,
-    alt: "Wedding seating arrangement acrylic sign",
-  },
-];
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -79,7 +70,7 @@ function Index() {
         <Hero />
         <TrustStrip />
         <StatsSection />
-        <Products />
+        <ProductCatalogueSection />
         <WhyUs />
         <Materials />
         <HowItWorks />
@@ -271,261 +262,381 @@ function DesktopHeroFeatures() {
   );
 }
 
-/* -------------------- PRODUCTS -------------------- */
-const PRODUCTS: ProductCard[] = [
+/* -------------------- PRODUCT CATALOGUE -------------------- */
+type CatalogueSubProduct = {
+  title: string;
+  description: string;
+  tags: string[];
+};
+
+type CatalogueCategory = {
+  title: string;
+  intro: string;
+  products: CatalogueSubProduct[];
+};
+
+const catalogueCategories: CatalogueCategory[] = [
   {
-    title: "Acrylic Logo Signs",
-    placeholder: "Acrylic Logo Sign Image",
-    desc: "Custom acrylic signs for offices, salons, cafés, studios, retail stores, and brand displays.",
-    image: acrylicLogoSign,
-    imageAlt: "Acrylic logo sign",
+    title: "Wedding & Event Signs",
+    intro:
+      "Custom event signage for planners, venues, decorators, weddings, and branded celebrations.",
+    products: [
+      {
+        title: "Welcome Signs",
+        description:
+          "Statement entrance signs for weddings, events, venues, and branded occasions.",
+        tags: ["Events", "Acrylic", "Custom Size"],
+      },
+      {
+        title: "Table Numbers",
+        description: "Premium table number signage for weddings, banquets, and event setups.",
+        tags: ["Tabletop", "Event Decor", "Custom Finish"],
+      },
+      {
+        title: "Seating Arrangements",
+        description: "Custom seating chart displays for organized, elegant guest experiences.",
+        tags: ["Seating Chart", "Large Format", "Planner Friendly"],
+      },
+      {
+        title: "Acrylic Event Signs",
+        description: "Clear, frosted, or printed acrylic signs for events and special occasions.",
+        tags: ["Acrylic", "UV Printed", "Event Display"],
+      },
+      {
+        title: "Custom Name Signs",
+        description: "Personalized name signs for couples, brands, venues, and celebrations.",
+        tags: ["Names", "Script Style", "Made to Order"],
+      },
+    ],
   },
   {
-    title: "Backlit Signs",
-    placeholder: "Backlit Sign Image",
-    desc: "Premium illuminated signs with warm lighting, clean edges, and strong brand visibility.",
-    image: backlitSign,
-    imageAlt: "Backlit sign",
-  },
-  {
-    title: "3D Acrylic Signs",
-    placeholder: "3D Acrylic Sign Image",
-    desc: "Dimensional acrylic signage with raised lettering, layered details, and professional finishing.",
-    image: threeDAcrylicSign,
-    imageAlt: "3D acrylic sign",
-  },
-  {
-    title: "UV Printed Signs",
-    placeholder: "UV Printed Sign Image",
-    desc: "High-quality printed signs with sharp colour, durable finishing, and custom artwork support.",
-    image: uvPrintedSign,
-  },
-  {
-    title: "Wedding Acrylic Signs",
-    placeholder: "Wedding Acrylic Sign Image",
-    desc: "Welcome signs, seating arrangement signs, table numbers, and elegant event signage.",
-    carouselImages: WEDDING_CARD_IMAGES,
-  },
-  {
-    title: "Business Wall Signs",
-    placeholder: "Business Wall Sign Image",
-    desc: "Custom wall-mounted signs for offices, reception areas, boutiques, and commercial interiors.",
-    image: businessWallSign,
-    imageAlt: "Business wall sign",
+    title: "Acrylic Business Signs",
+    intro:
+      "Premium acrylic signage for offices, salons, clinics, studios, shops, and reception walls.",
+    products: [
+      {
+        title: "UV Printed Acrylic Signs",
+        description:
+          "Full-color printed acrylic signs with sharp detail and a clean professional finish.",
+        tags: ["UV Printed", "Logo Signs", "Full Color"],
+      },
+      {
+        title: "Business Wall Signs",
+        description:
+          "Wall-mounted logo signs for offices, reception areas, retail stores, and studios.",
+        tags: ["Wall Mounted", "Reception", "Branding"],
+      },
+      {
+        title: "Frosted Acrylic Signs",
+        description: "Soft matte acrylic signage for premium interiors and subtle brand displays.",
+        tags: ["Frosted", "Interior", "Premium"],
+      },
+      {
+        title: "Clear Acrylic Signs",
+        description: "Transparent acrylic logo signs with a modern, clean, and polished look.",
+        tags: ["Clear Acrylic", "Modern", "Standoff"],
+      },
+      {
+        title: "Standoff Acrylic Signs",
+        description: "Acrylic panels mounted with metal standoffs for a floating wall sign effect.",
+        tags: ["Standoffs", "Wall Sign", "Office"],
+      },
+    ],
   },
   {
     title: "Metal Finish Signs",
-    placeholder: "Metal Finish Sign Image",
-    desc: "Premium gold, silver, black, and brushed metal-look finishes for luxury branding.",
-    image: metalFinishSign,
-    imageAlt: "Metal finish sign",
+    intro:
+      "Premium metal-look finishes for luxury branding, professional interiors, and commercial spaces.",
+    products: [
+      {
+        title: "2D Metal Signs",
+        description:
+          "Flat metal-style signs for clean, durable, and professional brand presentation.",
+        tags: ["2D", "Metal Finish", "Logo"],
+      },
+      {
+        title: "Brushed Gold Signs",
+        description:
+          "Warm brushed gold signage for premium shops, salons, offices, and hospitality brands.",
+        tags: ["Gold", "Luxury", "Brushed"],
+      },
+      {
+        title: "Brushed Silver Signs",
+        description:
+          "Cool silver-finish signage for corporate, clinic, and modern interior branding.",
+        tags: ["Silver", "Corporate", "Brushed"],
+      },
+      {
+        title: "Black Metal Finish Signs",
+        description:
+          "Bold black metal-finish signs for modern, minimal, and high-contrast branding.",
+        tags: ["Black Finish", "Modern", "Premium"],
+      },
+      {
+        title: "Metal Acrylic Combo Signs",
+        description: "Acrylic and metal-finish combinations for layered, premium sign designs.",
+        tags: ["Acrylic", "Metal Combo", "Layered"],
+      },
+    ],
+  },
+  {
+    title: "Channel Letters",
+    intro:
+      "Dimensional channel letters for storefronts, retail branding, offices, and commercial signage.",
+    products: [
+      {
+        title: "Backlit Channel Letters",
+        description:
+          "Halo-lit letters with a premium glow behind each character for storefront impact.",
+        tags: ["Backlit", "Halo Glow", "Storefront"],
+      },
+      {
+        title: "Front Lit Channel Letters",
+        description:
+          "Illuminated front-face channel letters for bright, visible commercial signage.",
+        tags: ["Front Lit", "LED", "Exterior"],
+      },
+      {
+        title: "Front & Backlit Channel Letters",
+        description: "Dual-lit channel letters with front illumination and rear halo lighting.",
+        tags: ["Dual Lit", "LED", "Premium"],
+      },
+      {
+        title: "Fully Lit Channel Letters",
+        description:
+          "Fully illuminated letters designed for strong nighttime visibility and brand presence.",
+        tags: ["Fully Lit", "Storefront", "High Visibility"],
+      },
+    ],
   },
   {
     title: "Lightbox Signs",
-    placeholder: "Lightbox Sign Image",
-    desc: "Bright illuminated lightbox signage for retail, hospitality, and business displays.",
-    image: lightboxSign,
-    imageAlt: "Lightbox sign",
+    intro:
+      "Illuminated lightbox signage for storefronts, indoor brand walls, displays, and commercial use.",
+    products: [
+      {
+        title: "Indoor Lightbox Signs",
+        description:
+          "Interior illuminated signage for reception walls, studios, displays, and brand spaces.",
+        tags: ["Indoor", "LED", "Display"],
+      },
+      {
+        title: "Outdoor Lightbox Signs",
+        description:
+          "Exterior lightbox signs built for storefronts, visibility, and commercial branding.",
+        tags: ["Outdoor", "Storefront", "Illuminated"],
+      },
+      {
+        title: "LED Lightbox Signs",
+        description:
+          "Energy-efficient LED lightbox signage with clean illumination and brand clarity.",
+        tags: ["LED", "Bright", "Custom"],
+      },
+      {
+        title: "Slim Lightbox Signs",
+        description:
+          "Thin-profile lightbox signs for modern interiors and sleek commercial displays.",
+        tags: ["Slim", "Modern", "Low Profile"],
+      },
+      {
+        title: "Logo Lightbox Signs",
+        description:
+          "Custom logo lightboxes designed around brand artwork, shapes, and visual identity.",
+        tags: ["Logo", "Custom Shape", "Branding"],
+      },
+    ],
   },
   {
-    title: "Front Lit Signs",
-    placeholder: "Backlit / Front Lit Sign Image",
-    desc: "Custom illuminated signage with front-lit or halo/backlit effects for maximum impact.",
-    image: frontLitSign,
-    imageAlt: "Front lit sign",
-  },
-  {
-    title: "White-label / Bulk Orders",
-    placeholder: "White-label / Bulk Order Image",
-    desc: "Signage manufacturing and fulfilment support for agencies, resellers, planners, and business suppliers.",
-    image: bulkOrdersSign,
-    imageAlt: "White-label bulk order signage",
+    title: "3D Letters",
+    intro:
+      "Dimensional letters for walls, receptions, storefronts, events, and branded environments.",
+    products: [
+      {
+        title: "Acrylic 3D Letters",
+        description: "Raised acrylic letters for clean, modern, and dimensional brand displays.",
+        tags: ["Acrylic", "Raised", "Wall Letters"],
+      },
+      {
+        title: "Metal 3D Letters",
+        description:
+          "Dimensional metal-finish letters for premium business and storefront signage.",
+        tags: ["Metal", "Dimensional", "Premium"],
+      },
+      {
+        title: "PVC / Foam 3D Letters",
+        description:
+          "Lightweight dimensional letters for events, interiors, displays, and temporary branding.",
+        tags: ["PVC", "Foam", "Lightweight"],
+      },
+      {
+        title: "Painted 3D Letters",
+        description:
+          "Custom painted dimensional letters matched to brand colors and interior concepts.",
+        tags: ["Painted", "Custom Color", "3D"],
+      },
+    ],
   },
 ];
 
-function Products() {
+const catalogueImages = [
+  weddingAcrylicSign,
+  weddingSeatingSign,
+  acrylicLogoSign,
+  businessWallSign,
+  uvPrintedSign,
+  metalFinishSign,
+  backlitSign,
+  frontLitSign,
+  lightboxSign,
+  threeDAcrylicSign,
+  bulkOrdersSign,
+].filter(Boolean);
+
+function getCatalogueImage(index: number) {
+  if (catalogueImages.length === 0) {
+    return "";
+  }
+
+  return catalogueImages[index % catalogueImages.length];
+}
+
+function ProductCatalogueSection() {
+  const [activeCategoryIndex, setActiveCategoryIndex] = useState(0);
+  const activeCategory = catalogueCategories[activeCategoryIndex];
+
+  const scrollToQuote = () => {
+    document.getElementById("quote")?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
-    <section id="products" className="px-6 py-24 lg:px-10">
+    <section id="products" className="bg-background px-6 py-12 lg:px-10 lg:py-24">
       <div className="mx-auto max-w-7xl">
-        <SectionHeader
-          eyebrow="Product Catalogue"
-          title="Custom signage solutions for every business"
-          subtitle="From logo signs to event displays, every piece is made to order with custom sizes, finishes, colours, and lighting options."
-        />
-        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {PRODUCTS.map((p, i) => (
-            <ProductCardReveal key={p.title} index={i}>
-              <div className="p-5">
-                {p.carouselImages ? (
-                  <WeddingImageCarousel images={p.carouselImages} />
-                ) : p.image ? (
-                  <div className="aspect-[5/4] overflow-hidden rounded-xl border border-gold/30 bg-[var(--card-soft)] p-2">
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="mb-3 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-gold lg:mb-4 lg:text-xs lg:tracking-[0.28em]">
+            Product Catalogue
+          </div>
+
+          <h2 className="font-display text-3xl leading-tight text-graphite sm:text-4xl lg:text-5xl">
+            Custom Signage We Manufacture
+          </h2>
+
+          <p className="mt-3 text-sm leading-6 text-muted-foreground lg:mt-5 lg:text-base lg:leading-7">
+            Select a category to explore custom signage options for B2B, wholesale, white-label,
+            event, and business projects.
+          </p>
+        </div>
+
+        <div className="relative -mx-6 mt-8 lg:mx-0 lg:mt-10">
+          <div className="overflow-x-auto px-6 pb-2 lg:px-0">
+            <div className="flex min-w-max animate-[cataloguePillHint_1.1s_ease-in-out_0.7s_1_both] gap-2 motion-reduce:animate-none lg:min-w-0 lg:flex-wrap lg:justify-center lg:gap-3 lg:animate-none">
+              {catalogueCategories.map((category, index) => {
+                const isActive = index === activeCategoryIndex;
+
+                return (
+                  <button
+                    key={category.title}
+                    type="button"
+                    onClick={() => setActiveCategoryIndex(index)}
+                    className={`rounded-full border px-4 py-2.5 text-xs font-medium transition lg:px-5 lg:py-3 lg:text-sm ${
+                      isActive
+                        ? "border-gold/50 bg-gold/10 text-graphite"
+                        : "border-border bg-card text-muted-foreground hover:border-gold/35 hover:text-graphite"
+                    }`}
+                  >
+                    {category.title}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 bg-gradient-to-r from-background to-transparent lg:hidden" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 bg-gradient-to-l from-background to-transparent lg:hidden" />
+        </div>
+
+        <div className="mt-7 lg:mt-10 lg:rounded-[2rem] lg:border lg:border-border lg:bg-card lg:p-8">
+          <div className="mb-4 rounded-2xl border border-border bg-card p-4 lg:mb-8 lg:flex lg:flex-row lg:items-end lg:justify-between lg:gap-4 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0">
+            <div>
+              <div className="text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-gold lg:text-xs lg:tracking-[0.24em]">
+                Selected Category
+              </div>
+
+              <h3 className="mt-2 font-display text-2xl leading-tight text-graphite sm:text-3xl lg:mt-3 lg:text-4xl">
+                {activeCategory.title}
+              </h3>
+
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground lg:mt-3 lg:text-base">
+                {activeCategory.intro}
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={scrollToQuote}
+              className="mt-4 inline-flex w-auto items-center justify-center rounded-full bg-graphite px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-90 lg:mt-0 lg:px-6 lg:py-3"
+            >
+              Request a Quote
+            </button>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+            {activeCategory.products.map((product, index) => {
+              const imageSrc = getCatalogueImage(index + activeCategoryIndex * 7);
+
+              return (
+                <article
+                  key={product.title}
+                  className="group overflow-hidden rounded-3xl border border-border bg-background"
+                >
+                  <div className="aspect-[4/3] overflow-hidden bg-[var(--card-soft)]">
                     <img
-                      src={p.image}
-                      alt={p.imageAlt ?? p.title}
-                      className="h-full w-full rounded-lg object-contain transition-transform duration-500 group-hover:scale-[1.02]"
+                      src={imageSrc}
+                      alt={product.title}
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                      loading="lazy"
                     />
                   </div>
-                ) : (
-                  <Placeholder label={p.placeholder} aspect="aspect-[5/4]" />
-                )}
-              </div>
-              <div className="flex flex-1 flex-col px-6 pb-6">
-                <div className="flex items-center gap-3">
-                  <span className="font-display text-xs text-gold">0{(i + 1) % 10}</span>
-                  <span className="h-px flex-1 bg-border" />
-                </div>
-                <h3 className="mt-3 font-display text-2xl text-graphite">{p.title}</h3>
-                <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
-                  {p.desc}
-                </p>
-                <a
-                  href="#quote"
-                  className="quote-cta-inline mt-6 inline-flex items-center gap-2 text-sm text-graphite transition-colors group-hover:text-gold"
-                >
-                  Request Quote
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                </a>
-              </div>
-            </ProductCardReveal>
-          ))}
+
+                  <div className="p-4 lg:p-5">
+                    <div className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-gold">
+                      {String(index + 1).padStart(2, "0")}
+                    </div>
+
+                    <h4 className="mt-2 font-display text-xl leading-tight text-graphite lg:mt-3 lg:text-2xl">
+                      {product.title}
+                    </h4>
+
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground lg:mt-3">
+                      {product.description}
+                    </p>
+
+                    <div className="mt-3 flex flex-wrap gap-2 lg:mt-4">
+                      {product.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-full border border-border bg-card px-2.5 py-1 text-[0.7rem] text-muted-foreground lg:px-3 lg:text-xs"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={scrollToQuote}
+                      className="mt-4 inline-flex items-center text-sm font-semibold text-graphite transition hover:text-gold lg:mt-5"
+                    >
+                      Request Quote
+                      <span className="ml-2">→</span>
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
-  );
-}
-
-function ProductCardReveal({ children, index }: { children: ReactNode; index: number }) {
-  const cardRef = useRef<HTMLElement | null>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const card = cardRef.current;
-    if (!card || isVisible) {
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry?.isIntersecting) {
-          return;
-        }
-
-        setIsVisible(true);
-        observer.disconnect();
-      },
-      {
-        threshold: 0.05,
-      },
-    );
-
-    observer.observe(card);
-
-    return () => observer.disconnect();
-  }, [isVisible]);
-
-  const isMobileViewport =
-    typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches;
-  const delay = (index % (isMobileViewport ? 1 : 3)) * 80;
-
-  return (
-    <article
-      ref={cardRef}
-      className={`product-card-reveal group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all duration-300 hover:-translate-y-1 hover:border-gold/40 hover:shadow-[0_24px_60px_-30px_rgba(176,141,87,0.35)] ${
-        isVisible ? "is-visible" : ""
-      }`}
-      style={{
-        transitionDelay: isVisible ? `${delay}ms` : "0ms",
-      }}
-    >
-      {children}
-    </article>
-  );
-}
-
-function WeddingImageCarousel({ images }: { images: ProductCardImage[] }) {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-
-  useEffect(() => {
-    if (isPaused || images.length < 2) {
-      return;
-    }
-
-    const intervalId = window.setInterval(() => {
-      setActiveIndex((current) => (current + 1) % images.length);
-    }, 4500);
-
-    return () => window.clearInterval(intervalId);
-  }, [images.length, isPaused]);
-
-  const goTo = (index: number) => {
-    setActiveIndex(index);
-  };
-
-  const showPrevious = () => {
-    setActiveIndex((current) => (current - 1 + images.length) % images.length);
-  };
-
-  const showNext = () => {
-    setActiveIndex((current) => (current + 1) % images.length);
-  };
-
-  return (
-    <div
-      className="group/carousel relative aspect-[5/4] overflow-hidden rounded-xl border border-gold/30 bg-[var(--card-soft)]"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      onFocusCapture={() => setIsPaused(true)}
-      onBlurCapture={() => setIsPaused(false)}
-    >
-      {images.map((image, index) => (
-        <img
-          key={image.src}
-          src={image.src}
-          alt={image.alt}
-          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
-            index === activeIndex ? "opacity-100" : "opacity-0"
-          }`}
-        />
-      ))}
-
-      {images.length > 1 ? (
-        <>
-          <button
-            type="button"
-            aria-label="Show previous wedding acrylic sign image"
-            onClick={showPrevious}
-            className="absolute left-3 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-white/40 bg-black/15 text-white opacity-0 backdrop-blur-sm transition-all duration-300 hover:bg-black/30 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60 group-hover/carousel:opacity-100"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-          <button
-            type="button"
-            aria-label="Show next wedding acrylic sign image"
-            onClick={showNext}
-            className="absolute right-3 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-white/40 bg-black/15 text-white opacity-0 backdrop-blur-sm transition-all duration-300 hover:bg-black/30 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60 group-hover/carousel:opacity-100"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </button>
-
-          <div className="absolute inset-x-0 bottom-3 z-10 flex items-center justify-center gap-2">
-            {images.map((image, index) => (
-              <button
-                key={image.alt}
-                type="button"
-                aria-label={`Show wedding acrylic sign image ${index + 1}`}
-                aria-pressed={index === activeIndex}
-                onClick={() => goTo(index)}
-                className={`h-2 w-2 rounded-full transition-all duration-300 ${
-                  index === activeIndex ? "bg-white/95" : "bg-white/45 hover:bg-white/70"
-                }`}
-              />
-            ))}
-          </div>
-        </>
-      ) : null}
-    </div>
   );
 }
 
@@ -730,31 +841,34 @@ const MATERIAL_GROUPS = [
 
 function Materials() {
   return (
-    <section id="materials" className="bg-graphite px-6 py-24 text-primary-foreground lg:px-10">
+    <section
+      id="materials"
+      className="bg-graphite px-6 py-12 text-primary-foreground lg:px-10 lg:py-24"
+    >
       <div className="mx-auto max-w-7xl">
-        <div className="grid gap-14 lg:grid-cols-[1.05fr_1fr]">
+        <div className="grid gap-8 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
           <div>
-            <span className="text-xs uppercase tracking-[0.22em] text-gold">
+            <span className="text-[0.68rem] uppercase tracking-[0.2em] text-gold lg:text-xs lg:tracking-[0.22em]">
               Materials, finishes &amp; custom options
             </span>
-            <h2 className="mt-4 font-display text-4xl md:text-5xl">
+            <h2 className="mt-3 font-display text-3xl lg:mt-4 lg:text-5xl">
               Crafted from <span className="gold-gradient-text italic">considered</span> materials.
             </h2>
-            <p className="mt-6 max-w-xl leading-relaxed text-primary-foreground/70">
+            <p className="mt-4 max-w-xl text-sm leading-6 text-primary-foreground/70 lg:mt-6 lg:text-base lg:leading-relaxed">
               Every sign is built to order. Choose your acrylic, lighting, finish and mounting — or
               let our team recommend the right combination for your brand and venue.
             </p>
-            <div className="mt-10 grid gap-5 sm:grid-cols-2">
+            <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:mt-10 lg:gap-5">
               {MATERIAL_GROUPS.map((g) => (
                 <div
                   key={g.title}
-                  className="rounded-xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur-sm"
+                  className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-sm lg:rounded-xl lg:p-5"
                 >
                   <div className="flex items-center gap-3">
                     <Layers className="h-4 w-4 text-gold" />
                     <h3 className="font-display text-xl text-primary-foreground">{g.title}</h3>
                   </div>
-                  <ul className="mt-3 space-y-1.5 text-sm text-primary-foreground/75">
+                  <ul className="mt-2 space-y-1 text-sm leading-6 text-primary-foreground/75 lg:mt-3 lg:space-y-1.5 lg:leading-normal">
                     {g.items.map((it) => (
                       <li key={it} className="flex gap-2">
                         <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-gold" />
@@ -767,7 +881,7 @@ function Materials() {
             </div>
             <a
               href="#quote"
-              className="quote-cta-animated mt-10 inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3 text-sm text-graphite transition-colors hover:bg-[var(--gold-hover)]"
+              className="quote-cta-animated mt-6 inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3 text-sm text-graphite transition-colors hover:bg-[var(--gold-hover)] lg:mt-10"
             >
               Request material options with your quote
               <ArrowRight className="h-4 w-4" />
@@ -814,22 +928,27 @@ const STEPS = [
 
 function HowItWorks() {
   return (
-    <section id="how" className="px-6 py-24 lg:px-10">
+    <section id="how" className="px-6 py-12 lg:px-10 lg:py-24">
       <div className="mx-auto max-w-7xl">
         <SectionHeader
           eyebrow="Process"
           title="Simple 4-step order process"
           subtitle="From the first message to delivery — clear, considered, and on-schedule."
         />
-        <div className="mt-16 grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4 lg:gap-px lg:overflow-hidden lg:rounded-2xl lg:border lg:border-border lg:bg-border">
           {STEPS.map((s) => (
-            <div key={s.n} className="bg-card p-7">
+            <div
+              key={s.n}
+              className="rounded-2xl border border-border bg-card p-4 lg:rounded-none lg:border-0 lg:p-7"
+            >
               <div className="flex items-baseline gap-3">
-                <span className="font-display text-4xl text-gold">{s.n}</span>
+                <span className="font-display text-3xl text-gold lg:text-4xl">{s.n}</span>
                 <div className="h-px flex-1 bg-gold/30" />
               </div>
-              <h3 className="mt-5 font-display text-xl text-graphite">{s.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.desc}</p>
+              <h3 className="mt-3 font-display text-xl text-graphite lg:mt-5">{s.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground lg:mt-3 lg:leading-relaxed">
+                {s.desc}
+              </p>
             </div>
           ))}
         </div>

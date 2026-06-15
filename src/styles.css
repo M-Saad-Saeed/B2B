@@ -405,6 +405,21 @@
   }
 }
 
+@keyframes cataloguePillHint {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  35% {
+    transform: translateX(-14px);
+  }
+
+  70% {
+    transform: translateX(6px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .quote-orbit::before,
   .quote-button-glow::after,
