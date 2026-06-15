@@ -1,6 +1,6 @@
 import { useState, type FormEvent, type ReactNode } from "react";
 import { z } from "zod";
-import { ArrowRight, CheckCircle2, Upload, Loader2 } from "lucide-react";
+import { ArrowRight, CheckCircle2, Upload, Loader2, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 
@@ -60,6 +60,12 @@ export function QuoteForm({ defaultProduct }: { defaultProduct?: string }) {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [files, setFiles] = useState<File[]>([]);
+
+  const removeFile = (indexToRemove: number) => {
+    setFiles((currentFiles) =>
+      currentFiles.filter((_, index) => index !== indexToRemove),
+    );
+  };
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -150,7 +156,12 @@ export function QuoteForm({ defaultProduct }: { defaultProduct?: string }) {
         </FormGroup>
 
         <FormGroup number="03" title="Files & References">
-          <FileField files={files} setFiles={setFiles} setError={setError} />
+          <FileField
+            files={files}
+            setFiles={setFiles}
+            setError={setError}
+            removeFile={removeFile}
+          />
         </FormGroup>
 
         <FormGroup number="04" title="Additional Notes">
@@ -254,6 +265,18 @@ function getFileExtension(fileName: string) {
   const index = fileName.lastIndexOf(".");
   return index >= 0 ? fileName.slice(index).toLowerCase() : "";
 }
+
+const formatFileSize = (bytes: number) => {
+  if (bytes < 1024) {
+    return `${bytes} B`;
+  }
+
+  if (bytes < 1024 * 1024) {
+    return `${(bytes / 1024).toFixed(1)} KB`;
+  }
+
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+};
 
 async function submitQuoteEmail(
   data: z.infer<typeof schema>,
@@ -411,10 +434,12 @@ function FileField({
   files,
   setFiles,
   setError,
+  removeFile,
 }: {
   files: File[];
   setFiles: (files: File[]) => void;
   setError: (error: string | null) => void;
+  removeFile: (indexToRemove: number) => void;
 }) {
   return (
     <div className="rounded-2xl border border-dashed border-gold/35 bg-gold/[0.04] p-4 lg:p-6">
@@ -454,20 +479,35 @@ function FileField({
 
             setError(null);
             setFiles(nextFiles);
+            e.currentTarget.value = "";
           }}
         />
       </label>
 
       {files.length > 0 && (
-        <div className="mt-3 space-y-2">
-          {files.map((file) => (
+        <div className="mt-4 space-y-2">
+          {files.map((file, index) => (
             <div
-              key={`${file.name}-${file.lastModified}`}
-              className="flex items-center justify-between gap-3 rounded-xl border border-border bg-background px-3 py-2.5"
+              key={`${file.name}-${file.size}-${file.lastModified}`}
+              className="flex items-center justify-between gap-3 rounded-xl border border-border bg-background px-3 py-3"
             >
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium text-graphite">{file.name}</p>
+
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  {formatFileSize(file.size)}
+                </p>
               </div>
+
+              <button
+                type="button"
+                onClick={() => removeFile(index)}
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition hover:border-destructive/40 hover:bg-destructive/5 hover:text-destructive"
+                aria-label={`Remove ${file.name}`}
+                title={`Remove ${file.name}`}
+              >
+                <Trash2 className="h-4 w-4" strokeWidth={1.8} />
+              </button>
             </div>
           ))}
         </div>
