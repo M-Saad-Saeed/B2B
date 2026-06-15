@@ -40,6 +40,28 @@ import materialsFinishesImage from "@/assets/materials-finishes.jpg";
 import uvPrintedSign from "@/assets/products/uv-printed-sign.png";
 import weddingAcrylicSign from "@/assets/products/wedding-acrylic-sign.jpg";
 import weddingSeatingSign from "@/assets/products/wedding-seating-sign.jpg";
+import tableNumbersSign from "@/assets/products/table-numbers.jpeg";
+import acrylicEventSignsImage from "@/assets/products/acrylic-event-signs.jpeg";
+import customNameSignsImage from "@/assets/products/custom-name-signs.jpeg";
+import uvPrintedAcrylicSignsImage from "@/assets/products/uv-printed-acrylic-signs.jpeg";
+import frostedAcrylicSignsImage from "@/assets/products/frosted-acrylic-signs.jpeg";
+import clearAcrylicSignsImage from "@/assets/products/clear-acrylic-signs.jpeg";
+import standoffAcrylicSignsImage from "@/assets/products/standoff-acrylic-signs.jpeg";
+import twoDMetalSignsImage from "@/assets/products/2d-metal-signs.jpeg";
+import brushedGoldSignsImage from "@/assets/products/brushed-gold-signs.jpeg";
+import brushedSilverSignsImage from "@/assets/products/brushed-silver-signs.jpeg";
+import metalAcrylicComboSignsImage from "@/assets/products/metal-acrylic-combo-signs.jpeg";
+import backlitChannelLettersImage from "@/assets/products/backlit-channel-letters.jpeg";
+import frontLitChannelLettersImage from "@/assets/products/front-lit-channel-letters.jpeg";
+import frontBacklitChannelLettersImage from "@/assets/products/front-backlit-channel-letters.jpeg";
+import fullyLitChannelLettersImage from "@/assets/products/fully-lit-channel-letters.jpeg";
+import indoorLightboxSignsImage from "@/assets/products/indoor-lightbox-signs.jpeg";
+import outdoorLightboxSignsImage from "@/assets/products/outdoor-lightbox-signs.jpeg";
+import logoLightboxSignsImage from "@/assets/products/logo-lightbox-signs.jpeg";
+import acrylic3DLettersImage from "@/assets/products/acrylic-3d-letters.jpeg";
+import metal3DLettersImage from "@/assets/products/metal-3d-letters.jpeg";
+import pvcFoam3DLettersImage from "@/assets/products/pvc-foam-3d-letters.jpeg";
+import painted3DLettersImage from "@/assets/products/painted-3d-letters.jpeg";
 
 const WA_URL = "https://wa.me/14304314377";
 const INSTAGRAM = "https://www.instagram.com/custom_logo_signs_/";
@@ -370,12 +392,6 @@ const catalogueCategories: CatalogueCategory[] = [
         tags: ["Silver", "Corporate", "Brushed"],
       },
       {
-        title: "Black Metal Finish Signs",
-        description:
-          "Bold black metal-finish signs for modern, minimal, and high-contrast branding.",
-        tags: ["Black Finish", "Modern", "Premium"],
-      },
-      {
         title: "Metal Acrylic Combo Signs",
         description: "Acrylic and metal-finish combinations for layered, premium sign designs.",
         tags: ["Acrylic", "Metal Combo", "Layered"],
@@ -428,18 +444,6 @@ const catalogueCategories: CatalogueCategory[] = [
         description:
           "Exterior lightbox signs built for storefronts, visibility, and commercial branding.",
         tags: ["Outdoor", "Storefront", "Illuminated"],
-      },
-      {
-        title: "LED Lightbox Signs",
-        description:
-          "Energy-efficient LED lightbox signage with clean illumination and brand clarity.",
-        tags: ["LED", "Bright", "Custom"],
-      },
-      {
-        title: "Slim Lightbox Signs",
-        description:
-          "Thin-profile lightbox signs for modern interiors and sleek commercial displays.",
-        tags: ["Slim", "Modern", "Low Profile"],
       },
       {
         title: "Logo Lightbox Signs",
@@ -495,7 +499,37 @@ const catalogueImages = [
   bulkOrdersSign,
 ].filter(Boolean);
 
-function getCatalogueImage(index: number) {
+const catalogueImageByProductTitle: Record<string, string> = {
+  "2D Metal Signs": twoDMetalSignsImage,
+  "Acrylic Event Signs": acrylicEventSignsImage,
+  "Backlit Channel Letters": backlitChannelLettersImage,
+  "Front & Backlit Channel Letters": frontBacklitChannelLettersImage,
+  "Front Lit Channel Letters": frontLitChannelLettersImage,
+  "Fully Lit Channel Letters": fullyLitChannelLettersImage,
+  "Brushed Gold Signs": brushedGoldSignsImage,
+  "Brushed Silver Signs": brushedSilverSignsImage,
+  "Clear Acrylic Signs": clearAcrylicSignsImage,
+  "Custom Name Signs": customNameSignsImage,
+  "Acrylic 3D Letters": acrylic3DLettersImage,
+  "Frosted Acrylic Signs": frostedAcrylicSignsImage,
+  "Indoor Lightbox Signs": indoorLightboxSignsImage,
+  "Logo Lightbox Signs": logoLightboxSignsImage,
+  "Metal 3D Letters": metal3DLettersImage,
+  "Metal Acrylic Combo Signs": metalAcrylicComboSignsImage,
+  "Outdoor Lightbox Signs": outdoorLightboxSignsImage,
+  "Painted 3D Letters": painted3DLettersImage,
+  "PVC / Foam 3D Letters": pvcFoam3DLettersImage,
+  "Standoff Acrylic Signs": standoffAcrylicSignsImage,
+  "UV Printed Acrylic Signs": uvPrintedAcrylicSignsImage,
+  "Table Numbers": tableNumbersSign,
+  "Seating Arrangements": weddingSeatingSign,
+};
+
+function getCatalogueImage(index: number, productTitle?: string) {
+  if (productTitle && catalogueImageByProductTitle[productTitle]) {
+    return catalogueImageByProductTitle[productTitle];
+  }
+
   if (catalogueImages.length === 0) {
     return "";
   }
@@ -610,7 +644,7 @@ function ProductCatalogueSection() {
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
             {activeCategory.products.map((product, index) => {
-              const imageSrc = getCatalogueImage(index + activeCategoryIndex * 7);
+              const imageSrc = getCatalogueImage(index + activeCategoryIndex * 7, product.title);
 
               return (
                 <article
