@@ -36,8 +36,10 @@ export const sendQuoteNotification = createServerFn({ method: "POST" })
     const accessKey = process.env.WEB3FORMS_ACCESS_KEY;
 
     if (!accessKey) {
-      console.error("Quote notification is not configured");
-      throw new Error("Quote notification is unavailable");
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("Quote notification is not configured; skipping Web3Forms delivery");
+      }
+      return { ok: false, skipped: true };
     }
 
     const response = await fetch("https://api.web3forms.com/submit", {
@@ -69,14 +71,16 @@ export const sendQuoteNotification = createServerFn({ method: "POST" })
 
     const result = (await response.json()) as { success?: boolean; message?: string };
     if (!response.ok || !result.success) {
-      console.error("Web3Forms notification request failed", {
-        status: response.status,
-        success: result.success === true,
-      });
+      if (process.env.NODE_ENV !== "production") {
+        console.error("Web3Forms notification request failed", {
+          status: response.status,
+          success: result.success === true,
+        });
+      }
       throw new Error("Quote notification failed");
     }
 
-    return { ok: true };
+    return { ok: true, skipped: false };
   });
 
 function formatEmailMessage(data: z.infer<typeof quoteNotificationSchema>) {

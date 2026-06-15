@@ -107,15 +107,19 @@ export function QuoteForm({ defaultProduct }: { defaultProduct?: string }) {
       try {
         await sendQuoteNotification({ data: parsed.data });
       } catch (notificationError) {
-        console.error(
-          "Quote inquiry was saved, but notification delivery failed",
-          notificationError,
-        );
+        if (import.meta.env.DEV) {
+          console.error(
+            "Quote inquiry was saved, but notification delivery failed",
+            notificationError,
+          );
+        }
       }
 
       setSuccess(true);
     } catch (err) {
-      console.error("Quote submission failed", err);
+      if (import.meta.env.DEV) {
+        console.error("Quote submission failed:", err);
+      }
       setError("We could not submit your request. Please try again.");
     } finally {
       submittingRef.current = false;
@@ -316,20 +320,22 @@ async function persistQuoteInquiry(data: z.infer<typeof schema>, files: File[]) 
   const uploadedPaths: string[] = [];
 
   try {
-    let file_url: string | null = null;
-    let file_urls: string[] = [];
-
     if (files.length > 0) {
       for (const file of files) {
         const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
         const path = `${QUOTE_UPLOAD_FOLDER}/${Date.now()}-${crypto.randomUUID()}-${safeName}`;
-        const { error: upErr } = await supabase.storage.from("quote-uploads").upload(path, file);
-        if (upErr) throw upErr;
+        const { error: upErr } = await supabase.storage.from("quote-uploads").upload(path, file, {
+          contentType: file.type || undefined,
+          upsert: false,
+        });
+        if (upErr) {
+          if (import.meta.env.DEV) {
+            console.error("Quote upload failed:", upErr);
+          }
+          throw upErr;
+        }
         uploadedPaths.push(path);
       }
-
-      file_urls = uploadedPaths;
-      file_url = uploadedPaths[0] ?? null;
     }
 
     const { error: insErr } = await supabase.from("quote_inquiries").insert({
@@ -344,10 +350,17 @@ async function persistQuoteInquiry(data: z.infer<typeof schema>, files: File[]) 
       material_finish: data.material_finish || null,
       deadline: data.deadline || null,
       notes: data.notes || null,
-      file_url,
-      file_urls,
+      status: "New",
+      source: "Website Landing Page",
+      file_url: uploadedPaths[0] ?? null,
+      file_urls: uploadedPaths,
     });
-    if (insErr) throw insErr;
+    if (insErr) {
+      if (import.meta.env.DEV) {
+        console.error("Quote database insertion failed:", insErr);
+      }
+      throw insErr;
+    }
   } catch (err) {
     if (uploadedPaths.length > 0) {
       const { error: cleanupError } = await supabase.storage
