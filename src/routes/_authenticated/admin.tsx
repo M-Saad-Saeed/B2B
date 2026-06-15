@@ -120,19 +120,56 @@ function AdminDashboard() {
   };
 
   const openFile = async (path: string) => {
+    const popup = window.open("", "_blank");
+
+    if (!popup) {
+      window.alert(
+        "Your browser blocked the file window. Please allow pop-ups for this site and try again.",
+      );
+      return;
+    }
+
+    popup.opener = null;
+    popup.document.title = "Opening file...";
+    popup.document.body.innerHTML = `
+      <div style="
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        margin: 0;
+        font-family: system-ui, sans-serif;
+        background: #f7f4ee;
+        color: #242424;
+      ">
+        <p>Opening file...</p>
+      </div>
+    `;
+
     // path may be a full URL or just a storage path
     if (path.startsWith("http")) {
-      window.open(path, "_blank");
+      popup.location.replace(path);
       return;
     }
-    const { data, error: err } = await supabase.storage
-      .from("quote-uploads")
-      .createSignedUrl(path, 60 * 10);
-    if (err || !data) {
-      toast.error("Could not open file");
-      return;
+
+    try {
+      const { data, error: err } = await supabase.storage
+        .from("quote-uploads")
+        .createSignedUrl(path, 60 * 10);
+
+      if (err || !data?.signedUrl) {
+        throw err ?? new Error("Signed URL was not created.");
+      }
+
+      popup.location.replace(data.signedUrl);
+    } catch (err) {
+      popup.close();
+
+      if (import.meta.env.DEV) {
+        console.error("Could not open uploaded file:", err);
+      }
+
+      window.alert("The uploaded file could not be opened. Please try again.");
     }
-    window.open(data.signedUrl, "_blank");
   };
 
   const getFilePaths = (inquiry: Inquiry) => {
@@ -351,6 +388,7 @@ function AdminDashboard() {
                               <div className="flex flex-col gap-2">
                                 {getFilePaths(i).map((path, index) => (
                                   <button
+                                    type="button"
                                     key={path}
                                     onClick={() => openFile(path)}
                                     className="inline-flex items-center gap-1 text-gold hover:underline"
@@ -432,6 +470,7 @@ function AdminDashboard() {
                         <div className="flex flex-col gap-2">
                           {getFilePaths(i).map((path, index) => (
                             <button
+                              type="button"
                               key={path}
                               onClick={() => openFile(path)}
                               className="inline-flex items-center gap-1 text-xs text-gold hover:underline"
