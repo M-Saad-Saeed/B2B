@@ -60,7 +60,7 @@ export function FAQ() {
           <span className="text-[0.68rem] uppercase tracking-[0.2em] text-gold lg:text-xs lg:tracking-[0.22em]">
             FAQ
           </span>
-          <h2 className="mt-3 font-display text-3xl text-graphite lg:mt-4 lg:text-5xl">
+          <h2 className="mt-3 font-display text-3xl text-graphite md:text-5xl lg:mt-4">
             Frequently Asked Questions
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-muted-foreground lg:mt-5 lg:text-base lg:leading-relaxed">
@@ -82,7 +82,7 @@ export function FAQ() {
               value={`faq-${i}`}
               className="overflow-hidden rounded-2xl border border-border bg-[var(--card-soft)] px-4 transition-colors hover:border-gold/40 data-[state=open]:border-gold/50 data-[state=open]:bg-card lg:rounded-xl lg:px-5"
             >
-              <AccordionTrigger className="py-4 font-display text-base text-graphite hover:no-underline lg:py-5 lg:text-xl">
+              <AccordionTrigger className="py-4 font-display text-base text-graphite hover:no-underline md:text-xl lg:py-5">
                 <span className="flex items-start gap-3 text-left lg:gap-4">
                   <span className="mt-1 font-display text-xs text-gold">
                     {String(i + 1).padStart(2, "0")}
@@ -90,15 +90,15 @@ export function FAQ() {
                   {item.q}
                 </span>
               </AccordionTrigger>
-              <AccordionContent className="pb-4 pl-8 pr-1 text-sm leading-6 text-muted-foreground lg:pb-5 lg:pl-10 lg:pr-2 lg:text-base lg:leading-relaxed">
+              <AccordionContent className="pb-4 pl-8 pr-1 text-sm leading-6 text-muted-foreground md:text-base lg:pb-5 lg:pl-10 lg:pr-2 lg:leading-relaxed">
                 {item.a}
               </AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
 
-        <div className="mt-10 rounded-2xl border border-gold/30 bg-card p-5 text-center shadow-[0_20px_60px_-30px_rgba(0,0,0,0.18)] lg:mt-14 lg:p-10">
-          <h3 className="font-display text-2xl text-graphite lg:text-3xl">Still have questions?</h3>
+        <div className="mt-10 rounded-2xl border border-gold/30 bg-card p-5 text-center shadow-[0_20px_60px_-30px_rgba(0,0,0,0.18)] md:p-10 lg:mt-14">
+          <h3 className="font-display text-2xl text-graphite md:text-3xl">Still have questions?</h3>
           <p className="mt-2 text-sm leading-6 text-muted-foreground lg:mt-3 lg:text-base lg:leading-normal">
             Send us your requirements and we’ll guide you.
           </p>
