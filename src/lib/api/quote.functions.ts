@@ -16,13 +16,28 @@ const quoteNotificationSchema = z.object({
   notes: z.string().trim().max(2000).optional().or(z.literal("")),
 });
 
+const quoteSubmissionSchema = quoteNotificationSchema.extend({
+  company_website: z.string().max(200).optional().or(z.literal("")),
+});
+
+export const validateQuoteSubmission = createServerFn({ method: "POST" })
+  .inputValidator(quoteSubmissionSchema)
+  .handler(async ({ data }) => {
+    if (data.company_website?.trim()) {
+      throw new Error("Quote submission rejected");
+    }
+
+    return { ok: true };
+  });
+
 export const sendQuoteNotification = createServerFn({ method: "POST" })
   .inputValidator(quoteNotificationSchema)
   .handler(async ({ data }) => {
     const accessKey = process.env.WEB3FORMS_ACCESS_KEY;
 
     if (!accessKey) {
-      throw new Error("Missing WEB3FORMS_ACCESS_KEY");
+      console.error("Quote notification is not configured");
+      throw new Error("Quote notification is unavailable");
     }
 
     const response = await fetch("https://api.web3forms.com/submit", {
@@ -54,7 +69,11 @@ export const sendQuoteNotification = createServerFn({ method: "POST" })
 
     const result = (await response.json()) as { success?: boolean; message?: string };
     if (!response.ok || !result.success) {
-      throw new Error(result.message || "Failed to send quote notification");
+      console.error("Web3Forms notification request failed", {
+        status: response.status,
+        success: result.success === true,
+      });
+      throw new Error("Quote notification failed");
     }
 
     return { ok: true };

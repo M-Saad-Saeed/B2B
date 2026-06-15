@@ -3,7 +3,7 @@ import { z } from "zod";
 import { ArrowRight, CheckCircle2, Upload, Loader2, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
-import { sendQuoteNotification } from "@/lib/api/quote.functions";
+import { sendQuoteNotification, validateQuoteSubmission } from "@/lib/api/quote.functions";
 
 const WA_URL = "https://wa.me/14304314377";
 
@@ -96,6 +96,12 @@ export function QuoteForm({ defaultProduct }: { defaultProduct?: string }) {
     submittingRef.current = true;
     setSubmitting(true);
     try {
+      await validateQuoteSubmission({
+        data: {
+          ...parsed.data,
+          company_website: typeof raw.company_website === "string" ? raw.company_website : "",
+        },
+      });
       await persistQuoteInquiry(parsed.data, files);
 
       try {

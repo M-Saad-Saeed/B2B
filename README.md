@@ -154,11 +154,13 @@ Optional or server-only variables:
 - `SUPABASE_PROJECT_ID`
 - `VITE_SUPABASE_PROJECT_ID`
 - `SUPABASE_SERVICE_ROLE_KEY`
+- `WEB3FORMS_ACCESS_KEY`
 
 Notes:
 
 - `src/integrations/supabase/client.ts` uses `VITE_*` values in the browser and falls back to server envs during SSR.
 - `src/integrations/supabase/client.server.ts` requires `SUPABASE_SERVICE_ROLE_KEY` and must never be exposed to client code.
+- `WEB3FORMS_ACCESS_KEY` must be configured in the hosting provider without a `VITE_` prefix, must never be committed with a real value, and requires a deployment restart after being added or changed.
 
 ## Local Development
 
@@ -198,6 +200,7 @@ Relevant migrations include:
 
 - [20260608000000_b2b_forms_init.sql](/Users/saad/Desktop/Mux Tech/LandingPage/final/supabase/migrations/20260608000000_b2b_forms_init.sql)
 - [20260608010000_quote_files_multifile.sql](/Users/saad/Desktop/Mux Tech/LandingPage/final/supabase/migrations/20260608010000_quote_files_multifile.sql)
+- [20260615090000_quote_submission_hardening.sql](/Users/saad/Desktop/Mux Tech/LandingPage/final/supabase/migrations/20260615090000_quote_submission_hardening.sql)
 
 These migrations create:
 
@@ -207,6 +210,16 @@ These migrations create:
 - `user_roles` table
 - `quote-uploads` storage bucket
 - storage and RLS policies
+
+## Deployment Checklist
+
+1. Configure `WEB3FORMS_ACCESS_KEY` in the hosting platform without a `VITE_` prefix.
+2. Rotate the previously exposed Web3Forms key if applicable.
+3. Apply the latest Supabase migration.
+4. Verify the `quote-uploads` bucket remains private.
+5. Test anonymous quote submission with no files and with several files.
+6. Test file removal before submission and failed notification handling.
+7. Test admin access, admin file opening, and non-admin rejection.
 
 ## Creating An Admin User
 
@@ -247,4 +260,4 @@ values ('YOUR_AUTH_USER_ID', 'admin');
 At the time of this README update:
 
 - `npm run build` passes
-- `npm run lint` passes with warnings only
+- `npm run lint` still reports pre-existing formatting issues in `src/routes/index.tsx` and existing fast-refresh warnings in shared UI files.
