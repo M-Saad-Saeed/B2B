@@ -4,11 +4,13 @@ import type { ComponentType, ReactNode } from "react";
 import {
   ArrowRight,
   Check,
+  ChevronDown,
   Clock,
   Factory,
   Globe as Globe2,
   Instagram,
   Layers,
+  Layers3,
   Mail,
   MapPin,
   Package,
@@ -512,7 +514,7 @@ function ProductCatalogueSection() {
     <section id="products" className="bg-background px-6 py-12 lg:px-10 lg:py-24">
       <div className="mx-auto max-w-7xl">
         <div className="mx-auto max-w-3xl text-center">
-          <div className="mb-3 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-gold lg:mb-4 lg:text-xs lg:tracking-[0.28em]">
+          <div className="mb-3 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-gold lg:mb-4 lg:text-xs lg:tracking-[0.28em]">
             Product Catalogue
           </div>
 
@@ -526,46 +528,72 @@ function ProductCatalogueSection() {
           </p>
         </div>
 
-        <div className="relative -mx-6 mt-8 lg:mx-0 lg:mt-10">
-          <div className="overflow-x-auto px-6 pb-2 lg:px-0">
-            <div className="flex min-w-max animate-[cataloguePillHint_1.1s_ease-in-out_0.7s_1_both] gap-2 motion-reduce:animate-none lg:min-w-0 lg:flex-wrap lg:justify-center lg:gap-3 lg:animate-none">
-              {catalogueCategories.map((category, index) => {
-                const isActive = index === activeCategoryIndex;
+        <div className="mt-7 -mx-6 overflow-x-auto px-6 pb-2 lg:mx-0 lg:mt-10 lg:px-0">
+          <div className="flex min-w-max gap-2 lg:min-w-0 lg:flex-wrap lg:justify-center lg:gap-3">
+            {catalogueCategories.map((category, index) => {
+              const isActive = index === activeCategoryIndex;
 
-                return (
-                  <button
-                    key={category.title}
-                    type="button"
-                    onClick={() => setActiveCategoryIndex(index)}
-                    className={`rounded-full border px-4 py-2.5 text-xs font-medium transition lg:px-5 lg:py-3 lg:text-sm ${
-                      isActive
-                        ? "border-gold/50 bg-gold/10 text-graphite"
-                        : "border-border bg-card text-muted-foreground hover:border-gold/35 hover:text-graphite"
-                    }`}
-                  >
-                    {category.title}
-                  </button>
-                );
-              })}
-            </div>
+              return (
+                <button
+                  key={category.title}
+                  type="button"
+                  onClick={(event) => {
+                    setActiveCategoryIndex(index);
+                    event.currentTarget.scrollIntoView({
+                      behavior: "smooth",
+                      inline: "center",
+                      block: "nearest",
+                    });
+                  }}
+                  className={`shrink-0 rounded-full border px-4 py-2.5 text-xs font-medium transition lg:px-5 lg:py-3 lg:text-sm ${
+                    isActive
+                      ? "border-gold/50 bg-gold/10 text-graphite"
+                      : "border-border bg-card text-muted-foreground hover:border-gold/35 hover:text-graphite"
+                  }`}
+                >
+                  {category.title}
+                </button>
+              );
+            })}
           </div>
-
-          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 bg-gradient-to-r from-background to-transparent lg:hidden" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 bg-gradient-to-l from-background to-transparent lg:hidden" />
         </div>
 
-        <div className="mt-7 lg:mt-10 lg:rounded-[2rem] lg:border lg:border-border lg:bg-card lg:p-8">
-          <div className="mb-4 rounded-2xl border border-border bg-card p-4 lg:mb-8 lg:flex lg:flex-row lg:items-end lg:justify-between lg:gap-4 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0">
+        <div className="mt-7 mb-4 flex items-end justify-between gap-4 lg:hidden">
+          <div className="min-w-0">
+            <div className="text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-gold">
+              Selected Category
+            </div>
+
+            <h3 className="mt-2 font-display text-2xl leading-tight text-graphite">
+              {activeCategory.title}
+            </h3>
+
+            <p className="mt-1 text-xs text-muted-foreground">
+              {activeCategory.products.length} products
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={scrollToQuote}
+            className="shrink-0 rounded-full border border-gold/40 bg-card px-4 py-2 text-xs font-semibold text-graphite"
+          >
+            Request Quote
+          </button>
+        </div>
+
+        <div className="lg:mt-10 lg:rounded-[2rem] lg:border lg:border-border lg:bg-card lg:p-8">
+          <div className="hidden lg:mb-8 lg:flex lg:flex-row lg:items-end lg:justify-between lg:gap-4 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0">
             <div>
-              <div className="text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-gold lg:text-xs lg:tracking-[0.24em]">
+              <div className="text-xs font-semibold uppercase tracking-[0.24em] text-gold">
                 Selected Category
               </div>
 
-              <h3 className="mt-2 font-display text-2xl leading-tight text-graphite sm:text-3xl lg:mt-3 lg:text-4xl">
+              <h3 className="mt-3 font-display text-4xl leading-tight text-graphite">
                 {activeCategory.title}
               </h3>
 
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground lg:mt-3 lg:text-base">
+              <p className="mt-3 max-w-2xl text-base leading-6 text-muted-foreground">
                 {activeCategory.intro}
               </p>
             </div>
@@ -573,7 +601,7 @@ function ProductCatalogueSection() {
             <button
               type="button"
               onClick={scrollToQuote}
-              className="mt-4 inline-flex w-auto items-center justify-center rounded-full bg-graphite px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-90 lg:mt-0 lg:px-6 lg:py-3"
+              className="mt-0 inline-flex w-auto items-center justify-center rounded-full bg-graphite px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
             >
               Request a Quote
             </button>
@@ -586,7 +614,7 @@ function ProductCatalogueSection() {
               return (
                 <article
                   key={product.title}
-                  className="group overflow-hidden rounded-3xl border border-border bg-background"
+                  className="group overflow-hidden rounded-2xl border border-border bg-card lg:rounded-3xl lg:bg-background"
                 >
                   <div className="aspect-[4/3] overflow-hidden bg-[var(--card-soft)]">
                     <img
@@ -598,7 +626,7 @@ function ProductCatalogueSection() {
                   </div>
 
                   <div className="p-4 lg:p-5">
-                    <div className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-gold">
+                    <div className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-gold lg:text-[0.68rem] lg:tracking-[0.22em]">
                       {String(index + 1).padStart(2, "0")}
                     </div>
 
@@ -611,10 +639,10 @@ function ProductCatalogueSection() {
                     </p>
 
                     <div className="mt-3 flex flex-wrap gap-2 lg:mt-4">
-                      {product.tags.map((tag) => (
+                      {product.tags.slice(0, 3).map((tag) => (
                         <span
                           key={tag}
-                          className="rounded-full border border-border bg-card px-2.5 py-1 text-[0.7rem] text-muted-foreground lg:px-3 lg:text-xs"
+                          className="rounded-full border border-border bg-background px-2.5 py-1 text-[0.7rem] text-muted-foreground lg:bg-card lg:px-3 lg:text-xs"
                         >
                           {tag}
                         </span>
@@ -840,60 +868,144 @@ const MATERIAL_GROUPS = [
 ];
 
 function Materials() {
+  const [openMaterialIndex, setOpenMaterialIndex] = useState(0);
+
   return (
     <section
       id="materials"
       className="bg-graphite px-6 py-12 text-primary-foreground lg:px-10 lg:py-24"
     >
-      <div className="mx-auto max-w-7xl">
-        <div className="grid gap-8 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
-          <div>
-            <span className="text-[0.68rem] uppercase tracking-[0.2em] text-gold lg:text-xs lg:tracking-[0.22em]">
-              Materials, finishes &amp; custom options
-            </span>
-            <h2 className="mt-3 font-display text-3xl lg:mt-4 lg:text-5xl">
-              Crafted from <span className="gold-gradient-text italic">considered</span> materials.
-            </h2>
-            <p className="mt-4 max-w-xl text-sm leading-6 text-primary-foreground/70 lg:mt-6 lg:text-base lg:leading-relaxed">
-              Every sign is built to order. Choose your acrylic, lighting, finish and mounting — or
-              let our team recommend the right combination for your brand and venue.
-            </p>
-            <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:mt-10 lg:gap-5">
-              {MATERIAL_GROUPS.map((g) => (
-                <div
-                  key={g.title}
-                  className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-sm lg:rounded-xl lg:p-5"
-                >
-                  <div className="flex items-center gap-3">
-                    <Layers className="h-4 w-4 text-gold" />
-                    <h3 className="font-display text-xl text-primary-foreground">{g.title}</h3>
-                  </div>
-                  <ul className="mt-2 space-y-1 text-sm leading-6 text-primary-foreground/75 lg:mt-3 lg:space-y-1.5 lg:leading-normal">
-                    {g.items.map((it) => (
-                      <li key={it} className="flex gap-2">
-                        <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-gold" />
-                        {it}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-            <a
-              href="#quote"
-              className="quote-cta-animated mt-6 inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3 text-sm text-graphite transition-colors hover:bg-[var(--gold-hover)] lg:mt-10"
-            >
-              Request material options with your quote
-              <ArrowRight className="h-4 w-4" />
-            </a>
+      <div className="lg:hidden">
+        <div className="mx-auto max-w-xl">
+          <div className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-gold">
+            Materials &amp; Finishes
           </div>
-          <div className="lg:pl-6">
-            <div className="aspect-[4/5] overflow-hidden rounded-xl border border-gold/30 bg-[var(--card-soft)] p-2">
-              <img
-                src={materialsFinishesImage}
-                alt="Materials and finishes chart"
-                className="h-full w-full rounded-lg object-cover"
-              />
+
+          <h2 className="mt-3 font-display text-3xl leading-tight text-primary-foreground">
+            Crafted from considered materials.
+          </h2>
+
+          <p className="mt-3 text-sm leading-6 text-primary-foreground/70">
+            Choose the material, lighting and finish — or let our team recommend the right
+            combination for your brand and venue.
+          </p>
+        </div>
+
+        <div className="mt-7 space-y-3">
+          {MATERIAL_GROUPS.map((group, index) => {
+            const isOpen = openMaterialIndex === index;
+
+            return (
+              <div
+                key={group.title}
+                className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04]"
+              >
+                <button
+                  type="button"
+                  onClick={() => setOpenMaterialIndex(isOpen ? -1 : index)}
+                  className="flex w-full items-center justify-between gap-4 px-4 py-4 text-left"
+                  aria-expanded={isOpen}
+                >
+                  <span className="flex items-center gap-3">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-gold/30 bg-gold/10 text-gold">
+                      <Layers3 className="h-4 w-4" strokeWidth={1.7} />
+                    </span>
+
+                    <span className="font-display text-lg text-primary-foreground">
+                      {group.title}
+                    </span>
+                  </span>
+
+                  <ChevronDown
+                    className={`h-4 w-4 shrink-0 text-gold transition-transform duration-200 ${
+                      isOpen ? "rotate-180" : ""
+                    }`}
+                    strokeWidth={1.7}
+                  />
+                </button>
+
+                {isOpen && (
+                  <div className="border-t border-white/10 px-4 pb-4 pt-3">
+                    <ul className="space-y-2">
+                      {group.items.map((item) => (
+                        <li
+                          key={item}
+                          className="flex items-start gap-3 text-sm leading-6 text-primary-foreground/75"
+                        >
+                          <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-gold" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        <button
+          type="button"
+          onClick={() => document.getElementById("quote")?.scrollIntoView({ behavior: "smooth" })}
+          className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold px-5 py-3 text-sm font-semibold text-graphite transition hover:opacity-90"
+        >
+          Request material options
+          <ArrowRight className="h-4 w-4" strokeWidth={1.8} />
+        </button>
+      </div>
+
+      <div className="hidden lg:block">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-8 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
+            <div>
+              <span className="text-[0.68rem] uppercase tracking-[0.2em] text-gold lg:text-xs lg:tracking-[0.22em]">
+                Materials, finishes &amp; custom options
+              </span>
+              <h2 className="mt-3 font-display text-3xl lg:mt-4 lg:text-5xl">
+                Crafted from <span className="gold-gradient-text italic">considered</span>{" "}
+                materials.
+              </h2>
+              <p className="mt-4 max-w-xl text-sm leading-6 text-primary-foreground/70 lg:mt-6 lg:text-base lg:leading-relaxed">
+                Every sign is built to order. Choose your acrylic, lighting, finish and mounting —
+                or let our team recommend the right combination for your brand and venue.
+              </p>
+              <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:mt-10 lg:gap-5">
+                {MATERIAL_GROUPS.map((g) => (
+                  <div
+                    key={g.title}
+                    className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-sm lg:rounded-xl lg:p-5"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Layers className="h-4 w-4 text-gold" />
+                      <h3 className="font-display text-xl text-primary-foreground">{g.title}</h3>
+                    </div>
+                    <ul className="mt-2 space-y-1 text-sm leading-6 text-primary-foreground/75 lg:mt-3 lg:space-y-1.5 lg:leading-normal">
+                      {g.items.map((it) => (
+                        <li key={it} className="flex gap-2">
+                          <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-gold" />
+                          {it}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+              <a
+                href="#quote"
+                className="quote-cta-animated mt-6 inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3 text-sm text-graphite transition-colors hover:bg-[var(--gold-hover)] lg:mt-10"
+              >
+                Request material options with your quote
+                <ArrowRight className="h-4 w-4" />
+              </a>
+            </div>
+            <div className="lg:pl-6">
+              <div className="aspect-[4/5] overflow-hidden rounded-xl border border-gold/30 bg-[var(--card-soft)] p-2">
+                <img
+                  src={materialsFinishesImage}
+                  alt="Materials and finishes chart"
+                  className="h-full w-full rounded-lg object-cover"
+                />
+              </div>
             </div>
           </div>
         </div>
