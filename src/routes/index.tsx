@@ -5,6 +5,7 @@ import {
   ArrowRight,
   Check,
   ChevronDown,
+  ChevronRight,
   Clock,
   Factory,
   Globe as Globe2,
@@ -1232,63 +1233,161 @@ function QuoteSection() {
 /* -------------------- CONTACT -------------------- */
 function Contact() {
   return (
-    <section id="contact" className="bg-[var(--card-soft)] px-6 py-24 lg:px-10">
-      <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-2 lg:items-center">
-        <div>
-          <span className="text-xs uppercase tracking-[0.22em] text-gold">Contact</span>
-          <h2 className="mt-4 font-display text-4xl text-graphite md:text-5xl">
-            Let's build your next sign.
-          </h2>
-          <p className="mt-6 max-w-md leading-relaxed text-muted-foreground">
-            Reach our team directly by email or WhatsApp. We typically respond within a few business
-            hours.
-          </p>
-          <div className="mt-10 flex flex-wrap gap-3">
-            <a
-              href={`mailto:${EMAIL}`}
-              className="inline-flex items-center gap-2 rounded-full bg-graphite px-5 py-3 text-sm text-primary-foreground transition-colors hover:bg-graphite/85"
-            >
-              <Mail className="h-4 w-4" /> Email Us
-            </a>
-            <a
-              href={WA_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-gold/50 px-5 py-3 text-sm text-graphite transition-colors hover:bg-gold/10"
-            >
-              <WhatsAppIcon className="h-5 w-5" /> Chat on WhatsApp
-            </a>
-            <a
-              href={INSTAGRAM}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-3 text-sm text-graphite transition-colors hover:border-gold hover:text-gold"
-            >
-              <Instagram className="h-4 w-4" /> View Instagram
-            </a>
-          </div>
+    <section id="contact" className="bg-[var(--card-soft)] px-6 py-12 lg:px-10 lg:py-24">
+      <div className="lg:hidden">
+        <div className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-gold">
+          Contact
         </div>
 
-        <div className="rounded-2xl border border-border bg-card p-8 shadow-[0_20px_60px_-30px_rgba(0,0,0,0.18)]">
-          <div className="space-y-6">
-            <ContactRow Icon={Mail} label="Email" value={EMAIL} href={`mailto:${EMAIL}`} />
-            <ContactRow
-              icon={<WhatsAppIcon className="h-5 w-5" />}
-              label="WhatsApp"
-              value="+1 430 431 4377"
-              href={WA_URL}
-            />
-            <ContactRow
-              Icon={Instagram}
-              label="Instagram"
-              value="@custom_logo_signs_"
-              href={INSTAGRAM}
-            />
-            <ContactRow Icon={MapPin} label="Location" value="Austin, Texas 78731" />
+        <h2 className="mt-3 font-display text-3xl leading-tight text-graphite">
+          Let&apos;s discuss your signage project.
+        </h2>
+
+        <p className="mt-3 text-sm leading-6 text-muted-foreground">
+          Contact our team for custom signage, wholesale, white-label, and bulk-order enquiries.
+        </p>
+
+        <div className="mt-7 grid gap-3">
+          <MobileContactRow Icon={Mail} label="Email" value={EMAIL} href={`mailto:${EMAIL}`} />
+          <MobileContactRow
+            icon={<WhatsAppIcon className="h-5 w-5" />}
+            label="WhatsApp"
+            value="+1 430 431 4377"
+            href={WA_URL}
+          />
+          <MobileContactRow
+            Icon={Instagram}
+            label="Instagram"
+            value="@custom_logo_signs_"
+            href={INSTAGRAM}
+          />
+          <MobileContactRow Icon={MapPin} label="Location" value="Austin, Texas 78731" />
+        </div>
+
+        <button
+          type="button"
+          onClick={() => document.getElementById("quote")?.scrollIntoView({ behavior: "smooth" })}
+          className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-graphite px-5 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
+        >
+          Request a Quote
+          <ArrowRight className="h-4 w-4" strokeWidth={1.8} />
+        </button>
+
+        <a
+          href={WA_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full border border-gold/50 px-5 py-3 text-sm font-semibold text-graphite transition hover:bg-gold/10"
+        >
+          <WhatsAppIcon className="h-5 w-5" /> Chat on WhatsApp
+        </a>
+      </div>
+
+      <div className="hidden lg:block">
+        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-2 lg:items-center">
+          <div>
+            <span className="text-xs uppercase tracking-[0.22em] text-gold">Contact</span>
+            <h2 className="mt-4 font-display text-4xl text-graphite md:text-5xl">
+              Let's build your next sign.
+            </h2>
+            <p className="mt-6 max-w-md leading-relaxed text-muted-foreground">
+              Reach our team directly by email or WhatsApp. We typically respond within a few
+              business hours.
+            </p>
+            <div className="mt-10 flex flex-wrap gap-3">
+              <a
+                href={`mailto:${EMAIL}`}
+                className="inline-flex items-center gap-2 rounded-full bg-graphite px-5 py-3 text-sm text-primary-foreground transition-colors hover:bg-graphite/85"
+              >
+                <Mail className="h-4 w-4" /> Email Us
+              </a>
+              <a
+                href={WA_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full border border-gold/50 px-5 py-3 text-sm text-graphite transition-colors hover:bg-gold/10"
+              >
+                <WhatsAppIcon className="h-5 w-5" /> Chat on WhatsApp
+              </a>
+              <a
+                href={INSTAGRAM}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-3 text-sm text-graphite transition-colors hover:border-gold hover:text-gold"
+              >
+                <Instagram className="h-4 w-4" /> View Instagram
+              </a>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-border bg-card p-8 shadow-[0_20px_60px_-30px_rgba(0,0,0,0.18)]">
+            <div className="space-y-6">
+              <ContactRow Icon={Mail} label="Email" value={EMAIL} href={`mailto:${EMAIL}`} />
+              <ContactRow
+                icon={<WhatsAppIcon className="h-5 w-5" />}
+                label="WhatsApp"
+                value="+1 430 431 4377"
+                href={WA_URL}
+              />
+              <ContactRow
+                Icon={Instagram}
+                label="Instagram"
+                value="@custom_logo_signs_"
+                href={INSTAGRAM}
+              />
+              <ContactRow Icon={MapPin} label="Location" value="Austin, Texas 78731" />
+            </div>
           </div>
         </div>
       </div>
     </section>
+  );
+}
+
+function MobileContactRow({
+  Icon,
+  icon,
+  label,
+  value,
+  href,
+}: {
+  Icon?: ComponentType<{ className?: string; strokeWidth?: number }>;
+  icon?: ReactNode;
+  label: string;
+  value: string;
+  href?: string;
+}) {
+  const inner = (
+    <>
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gold/30 bg-gold/10 text-gold">
+        {icon ?? (Icon ? <Icon className="h-4 w-4" strokeWidth={1.7} /> : null)}
+      </span>
+
+      <span className="min-w-0 flex-1">
+        <span className="block text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+          {label}
+        </span>
+
+        <span className="mt-1 block truncate font-display text-lg text-graphite">{value}</span>
+      </span>
+
+      {href ? <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" /> : null}
+    </>
+  );
+
+  return href ? (
+    <a
+      href={href}
+      target={href.startsWith("http") ? "_blank" : undefined}
+      rel="noopener noreferrer"
+      className="flex items-center gap-4 rounded-2xl border border-border bg-card p-4"
+    >
+      {inner}
+    </a>
+  ) : (
+    <div className="flex items-center gap-4 rounded-2xl border border-border bg-card p-4">
+      {inner}
+    </div>
   );
 }
 
@@ -1332,10 +1431,129 @@ function ContactRow({
 
 /* -------------------- FOOTER -------------------- */
 function Footer() {
+  const [openFooterGroup, setOpenFooterGroup] = useState(0);
+  const footerGroups = [
+    {
+      title: "Quick Links",
+      links: [
+        ["Products", "#products"],
+        ["Stats", "#stats"],
+        ["Materials", "#materials"],
+        ["How It Works", "#how"],
+        ["Request Quote", "#quote"],
+      ],
+    },
+  ];
+
   return (
-    <footer className="border-t border-border bg-background px-6 py-16 lg:px-10">
+    <footer className="border-t border-border bg-background px-6 pb-8 pt-12 lg:px-10 lg:py-16">
       <div className="mx-auto max-w-7xl">
-        <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr]">
+        <div className="lg:hidden">
+          <Logo />
+          <p className="mt-4 max-w-sm text-sm leading-6 text-muted-foreground">
+            Premium custom acrylic and business signage for B2B, wholesale, and white-label clients.
+          </p>
+
+          <div className="mt-6">
+            {footerGroups.map((group, index) => {
+              const isOpen = openFooterGroup === index;
+
+              return (
+                <div key={group.title} className="border-t border-border">
+                  <button
+                    type="button"
+                    onClick={() => setOpenFooterGroup(isOpen ? -1 : index)}
+                    className="flex w-full items-center justify-between py-4 text-left"
+                    aria-expanded={isOpen}
+                  >
+                    <span className="text-sm font-semibold text-graphite">{group.title}</span>
+
+                    <ChevronDown
+                      className={`h-4 w-4 text-gold transition-transform ${
+                        isOpen ? "rotate-180" : ""
+                      }`}
+                      strokeWidth={1.7}
+                    />
+                  </button>
+
+                  {isOpen && (
+                    <ul className="space-y-3 pb-4">
+                      {group.links.map(([label, href]) => (
+                        <li key={label}>
+                          <a
+                            href={href}
+                            className="text-sm text-foreground/70 transition hover:text-gold"
+                          >
+                            {label}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="mt-6 space-y-3 border-t border-border pt-5">
+            <a
+              href={`mailto:${EMAIL}`}
+              className="flex items-center gap-3 text-sm text-foreground/70 transition hover:text-gold"
+            >
+              <Mail className="h-4 w-4 text-gold" />
+              <span className="truncate">{EMAIL}</span>
+            </a>
+            <a
+              href={WA_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 text-sm text-foreground/70 transition hover:text-gold"
+            >
+              <WhatsAppIcon className="h-5 w-5" />
+              <span>+1 430 431 4377</span>
+            </a>
+          </div>
+
+          <div className="mt-6 flex items-center gap-3">
+            <a
+              href={WA_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-graphite transition hover:border-gold hover:text-gold"
+              aria-label="WhatsApp"
+            >
+              <WhatsAppIcon className="h-5 w-5" />
+            </a>
+            <a
+              href={INSTAGRAM}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-graphite transition hover:border-gold hover:text-gold"
+              aria-label="Instagram"
+            >
+              <Instagram className="h-4 w-4" />
+            </a>
+            <a
+              href={`mailto:${EMAIL}`}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-graphite transition hover:border-gold hover:text-gold"
+              aria-label="Email"
+            >
+              <Mail className="h-4 w-4" />
+            </a>
+          </div>
+
+          <div className="mt-8 border-t border-border pt-5">
+            <p className="text-xs leading-5 text-muted-foreground">
+              © {new Date().getFullYear()} Custom Logo Sign. All rights reserved.
+            </p>
+
+            <p className="mt-3 text-xs leading-5 text-muted-foreground">
+              Premium signage, made to order.
+            </p>
+          </div>
+        </div>
+
+        <div className="hidden lg:grid lg:gap-10 lg:grid-cols-[1.4fr_1fr_1fr]">
           <div>
             <Logo />
             <p className="mt-6 max-w-sm text-sm leading-relaxed text-muted-foreground">
@@ -1429,8 +1647,8 @@ function Footer() {
           </div>
         </div>
 
-        <div className="gold-divider mt-12" />
-        <div className="mt-6 flex flex-col items-start justify-between gap-3 text-xs text-muted-foreground sm:flex-row sm:items-center">
+        <div className="gold-divider mt-12 hidden lg:block" />
+        <div className="mt-6 hidden flex-col items-start justify-between gap-3 text-xs text-muted-foreground sm:flex-row sm:items-center lg:flex">
           <p>© {new Date().getFullYear()} Custom Logo Sign. All rights reserved.</p>
           <p>Premium signage, made to order.</p>
         </div>
