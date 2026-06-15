@@ -1133,8 +1133,44 @@ function B2B() {
     "White-label support available",
   ];
   return (
-    <section className="px-6 py-24 lg:px-10">
-      <div className="mx-auto max-w-7xl overflow-hidden rounded-3xl border border-gold/30 bg-[var(--card-soft)]">
+    <section className="px-6 py-12 lg:px-10 lg:py-24">
+      <div className="lg:hidden">
+        <div className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-gold">
+          For Resellers &amp; Agencies
+        </div>
+
+        <h2 className="mt-3 font-display text-3xl leading-tight text-graphite">
+          Built for white-label and bulk signage partners.
+        </h2>
+
+        <p className="mt-3 text-sm leading-6 text-muted-foreground">
+          We support sign shops, agencies, event businesses, resellers, and commercial suppliers
+          with custom manufacturing and fulfilment.
+        </p>
+
+        <div className="mt-7 grid grid-cols-2 gap-3">
+          {points.map((p) => (
+            <div key={p} className="rounded-2xl border border-border bg-card p-4">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-gold/30 bg-gold/10 text-gold">
+                <Check className="h-4 w-4" strokeWidth={1.7} />
+              </span>
+
+              <h3 className="mt-3 text-sm font-semibold leading-5 text-graphite">{p}</h3>
+            </div>
+          ))}
+        </div>
+
+        <button
+          type="button"
+          onClick={() => document.getElementById("quote")?.scrollIntoView({ behavior: "smooth" })}
+          className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-graphite px-5 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
+        >
+          Request a Partner Quote
+          <ArrowRight className="h-4 w-4" strokeWidth={1.8} />
+        </button>
+      </div>
+
+      <div className="mx-auto hidden max-w-7xl overflow-hidden rounded-3xl border border-gold/30 bg-[var(--card-soft)] lg:block">
         <div className="grid gap-10 p-10 lg:grid-cols-[1.1fr_1fr] lg:p-16">
           <div>
             <span className="text-xs uppercase tracking-[0.22em] text-gold">
