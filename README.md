@@ -78,10 +78,11 @@ Current upload rules:
 
 - Up to `5` files
 - Max `10 MB` per file
-- Max `50 MB` total
+- Max `20 MB` total
 - Allowed formats: `jpg`, `jpeg`, `png`, `webp`, `pdf`, `svg`, `ai`, `eps`
 
 If file upload succeeds but database insertion fails, the uploaded files are cleaned up to avoid orphaned storage objects.
+Email notifications use the server-only `WEB3FORMS_ACCESS_KEY` environment variable; do not expose this key through `VITE_` variables.
 
 ## Supabase Data Model
 

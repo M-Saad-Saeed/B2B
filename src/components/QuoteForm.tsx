@@ -1,8 +1,9 @@
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import { z } from "zod";
 import { ArrowRight, CheckCircle2, Upload, Loader2, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
+import { sendQuoteNotification } from "@/lib/api/quote.functions";
 
 const WA_URL = "https://wa.me/14304314377";
 
@@ -25,7 +26,6 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const MAX_FILES = 5;
 const MAX_TOTAL_UPLOAD_SIZE = 20 * 1024 * 1024;
 const QUOTE_UPLOAD_FOLDER = "quote-inquiries";
-const WEB3FORMS_ACCESS_KEY = "be15b3e9-ef26-4ec6-8459-9c779374b27f";
 const ACCEPTED_FILE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp", ".pdf", ".svg", ".ai", ".eps"];
 const ACCEPTED_FILE_TYPES = new Set([
   "image/jpeg",
@@ -35,6 +35,7 @@ const ACCEPTED_FILE_TYPES = new Set([
   "image/svg+xml",
   "application/postscript",
   "application/illustrator",
+  "application/vnd.adobe.illustrator",
   "application/eps",
   "application/x-illustrator",
   "application/x-eps",
@@ -60,18 +61,25 @@ export function QuoteForm({ defaultProduct }: { defaultProduct?: string }) {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [files, setFiles] = useState<File[]>([]);
+  const submittingRef = useRef(false);
 
   const removeFile = (indexToRemove: number) => {
-    setFiles((currentFiles) =>
-      currentFiles.filter((_, index) => index !== indexToRemove),
-    );
+    setFiles((currentFiles) => currentFiles.filter((_, index) => index !== indexToRemove));
   };
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (submittingRef.current) return;
+
     setError(null);
     const form = new FormData(e.currentTarget);
-    const raw = Object.fromEntries(form.entries()) as Record<string, string>;
+    const raw = Object.fromEntries(form.entries());
+
+    // Basic honeypot spam layer only; real abuse protection belongs server-side.
+    if (typeof raw.company_website === "string" && raw.company_website.trim()) {
+      setError("We could not submit your request. Please try again.");
+      return;
+    }
 
     const parsed = schema.safeParse(raw);
     if (!parsed.success) {
@@ -85,14 +93,26 @@ export function QuoteForm({ defaultProduct }: { defaultProduct?: string }) {
       return;
     }
 
+    submittingRef.current = true;
     setSubmitting(true);
     try {
-      await submitQuoteEmail(parsed.data);
-      void persistQuoteInquiry(parsed.data, files);
+      await persistQuoteInquiry(parsed.data, files);
+
+      try {
+        await sendQuoteNotification({ data: parsed.data });
+      } catch (notificationError) {
+        console.error(
+          "Quote inquiry was saved, but notification delivery failed",
+          notificationError,
+        );
+      }
+
       setSuccess(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      console.error("Quote submission failed", err);
+      setError("We could not submit your request. Please try again.");
     } finally {
+      submittingRef.current = false;
       setSubmitting(false);
     }
   }
@@ -124,6 +144,14 @@ export function QuoteForm({ defaultProduct }: { defaultProduct?: string }) {
       onSubmit={onSubmit}
       className="quote-orbit rounded-2xl border border-border bg-card p-4 sm:p-5 lg:rounded-[2rem] lg:p-10 lg:shadow-[0_20px_60px_-30px_rgba(0,0,0,0.18)]"
     >
+      <input
+        type="text"
+        name="company_website"
+        tabIndex={-1}
+        autoComplete="off"
+        className="hidden"
+        aria-hidden="true"
+      />
       <div className="space-y-6 lg:space-y-8">
         <FormGroup number="01" title="Contact Details">
           <div className="grid gap-4 lg:grid-cols-2 lg:gap-5">
@@ -278,40 +306,6 @@ const formatFileSize = (bytes: number) => {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 };
 
-async function submitQuoteEmail(
-  data: z.infer<typeof schema>,
-) {
-  const formData = new FormData();
-  formData.append("access_key", WEB3FORMS_ACCESS_KEY);
-  formData.append("subject", `New quote request from ${data.full_name}`);
-  formData.append("from_name", "Custom Logo Sign Website");
-  formData.append("name", data.full_name);
-  formData.append("email", data.email);
-  formData.append("replyto", data.email);
-  formData.append("message", formatEmailMessage(data));
-
-  if (data.business_name) formData.append("business_name", data.business_name);
-  if (data.whatsapp_number) formData.append("whatsapp_number", data.whatsapp_number);
-  if (data.country) formData.append("country", data.country);
-  if (data.product_type) formData.append("product_type", data.product_type);
-  if (data.size_required) formData.append("size_required", data.size_required);
-  if (data.quantity) formData.append("quantity", data.quantity);
-  if (data.lighting_option) formData.append("lighting_option", data.lighting_option);
-  if (data.material_finish) formData.append("material_finish", data.material_finish);
-  if (data.deadline) formData.append("deadline", data.deadline);
-  if (data.notes) formData.append("notes", data.notes);
-
-  const response = await fetch("https://api.web3forms.com/submit", {
-    method: "POST",
-    body: formData,
-  });
-
-  const result = (await response.json()) as { success?: boolean; message?: string };
-  if (!response.ok || !result.success) {
-    throw new Error(result.message || "Failed to send email notification");
-  }
-}
-
 async function persistQuoteInquiry(data: z.infer<typeof schema>, files: File[]) {
   const uploadedPaths: string[] = [];
 
@@ -350,27 +344,15 @@ async function persistQuoteInquiry(data: z.infer<typeof schema>, files: File[]) 
     if (insErr) throw insErr;
   } catch (err) {
     if (uploadedPaths.length > 0) {
-      await supabase.storage.from("quote-uploads").remove(uploadedPaths);
+      const { error: cleanupError } = await supabase.storage
+        .from("quote-uploads")
+        .remove(uploadedPaths);
+      if (cleanupError) {
+        console.error("Failed to clean up quote upload rollback files", cleanupError);
+      }
     }
-    console.error("Failed to persist quote inquiry", err);
+    throw err;
   }
-}
-
-function formatEmailMessage(data: z.infer<typeof schema>) {
-  return [
-    `Full name: ${data.full_name}`,
-    `Business name: ${data.business_name || "-"}`,
-    `Email: ${data.email}`,
-    `WhatsApp number: ${data.whatsapp_number || "-"}`,
-    `Country: ${data.country || "-"}`,
-    `Product type: ${data.product_type || "-"}`,
-    `Size required: ${data.size_required || "-"}`,
-    `Quantity: ${data.quantity || "-"}`,
-    `Lighting option: ${data.lighting_option || "-"}`,
-    `Material / finish: ${data.material_finish || "-"}`,
-    `Deadline: ${data.deadline || "-"}`,
-    `Notes: ${data.notes || "-"}`,
-  ].join("\n");
 }
 
 function Field({
@@ -467,18 +449,18 @@ function FileField({
           accept=".jpg,.jpeg,.png,.webp,.pdf,.svg,.ai,.eps"
           className="hidden"
           onChange={(e) => {
-            const nextFiles = Array.from(e.target.files ?? []);
-            const validationError = validateFiles(nextFiles);
+            const selectedFiles = Array.from(e.currentTarget.files ?? []);
+            const combinedFiles = dedupeFiles([...files, ...selectedFiles]);
+            const validationError = validateFiles(combinedFiles);
 
             if (validationError) {
-              setFiles([]);
               setError(validationError);
               e.currentTarget.value = "";
               return;
             }
 
             setError(null);
-            setFiles(nextFiles);
+            setFiles(combinedFiles);
             e.currentTarget.value = "";
           }}
         />
@@ -494,9 +476,7 @@ function FileField({
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium text-graphite">{file.name}</p>
 
-                <p className="mt-0.5 text-xs text-muted-foreground">
-                  {formatFileSize(file.size)}
-                </p>
+                <p className="mt-0.5 text-xs text-muted-foreground">{formatFileSize(file.size)}</p>
               </div>
 
               <button
@@ -514,4 +494,15 @@ function FileField({
       )}
     </div>
   );
+}
+
+function dedupeFiles(files: File[]) {
+  const seen = new Set<string>();
+
+  return files.filter((file) => {
+    const key = `${file.name}-${file.size}-${file.lastModified}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }

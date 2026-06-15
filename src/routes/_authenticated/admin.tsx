@@ -64,7 +64,6 @@ function AdminDashboard() {
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<Status | "All">("All");
-  const [signedFiles, setSignedFiles] = useState<Record<string, string>>({});
 
   useEffect(() => {
     (async () => {
@@ -121,10 +120,6 @@ function AdminDashboard() {
   };
 
   const openFile = async (path: string) => {
-    if (signedFiles[path]) {
-      window.open(signedFiles[path], "_blank");
-      return;
-    }
     // path may be a full URL or just a storage path
     if (path.startsWith("http")) {
       window.open(path, "_blank");
@@ -137,7 +132,6 @@ function AdminDashboard() {
       toast.error("Could not open file");
       return;
     }
-    setSignedFiles((m) => ({ ...m, [path]: data.signedUrl }));
     window.open(data.signedUrl, "_blank");
   };
 
