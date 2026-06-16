@@ -25,6 +25,7 @@ type Inquiry = {
   country: string | null;
   product_type: string | null;
   size_required: string | null;
+  installation_environment: string | null;
   quantity: string | null;
   lighting_option: string | null;
   material_finish: string | null;
@@ -375,6 +376,7 @@ function AdminDashboard() {
                           </td>
                           <td className="px-4 py-4 text-xs text-muted-foreground">
                             {i.size_required && <div>Size: {i.size_required}</div>}
+                            <div>Sign placement: {i.installation_environment ?? "Not specified"}</div>
                             {i.quantity && <div>Qty: {i.quantity}</div>}
                             {i.deadline && <div>Deadline: {i.deadline}</div>}
                             {i.notes && (
@@ -454,6 +456,7 @@ function AdminDashboard() {
                       <Row label="WhatsApp" value={i.whatsapp_number} />
                       <Row label="Product" value={i.product_type} />
                       <Row label="Size" value={i.size_required} />
+                      <Row label="Sign placement" value={i.installation_environment ?? "Not specified"} />
                       <Row label="Qty" value={i.quantity} />
                       <Row label="Lighting" value={i.lighting_option} />
                       <Row label="Material" value={i.material_finish} />

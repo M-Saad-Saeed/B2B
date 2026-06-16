@@ -1,6 +1,6 @@
 import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import { z } from "zod";
-import { ArrowRight, CheckCircle2, Upload, Loader2, Trash2 } from "lucide-react";
+import { ArrowRight, CheckCircle2, Upload, Loader2, Trash2, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { sendQuoteNotification, validateQuoteSubmission } from "@/lib/api/quote.functions";
@@ -22,6 +22,18 @@ const PRODUCT_TYPES = [
 ];
 
 const LIGHTING = ["No lighting", "Backlit", "Front lit", "Lightbox", "Not sure"];
+const INSTALLATION_ENVIRONMENTS = [
+  {
+    value: "Indoor" as const,
+    label: "Indoor",
+    description: "Interior installation",
+  },
+  {
+    value: "Outdoor" as const,
+    label: "Outdoor",
+    description: "Weather-exposed installation",
+  },
+];
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const MAX_FILES = 5;
 const MAX_TOTAL_UPLOAD_SIZE = 20 * 1024 * 1024;
@@ -49,6 +61,10 @@ const schema = z.object({
   country: z.string().trim().max(80).optional().or(z.literal("")),
   product_type: z.string().max(80).optional().or(z.literal("")),
   size_required: z.string().trim().max(120).optional().or(z.literal("")),
+  installation_environment: z.enum(["Indoor", "Outdoor"], {
+    required_error: "Please select a sign placement.",
+    invalid_type_error: "Please select a sign placement.",
+  }),
   quantity: z.string().trim().max(40).optional().or(z.literal("")),
   lighting_option: z.string().max(40).optional().or(z.literal("")),
   material_finish: z.string().trim().max(200).optional().or(z.literal("")),
@@ -61,6 +77,7 @@ export function QuoteForm({ defaultProduct }: { defaultProduct?: string }) {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [files, setFiles] = useState<File[]>([]);
+  const [installationEnvironment, setInstallationEnvironment] = useState<"" | "Indoor" | "Outdoor">("");
   const submittingRef = useRef(false);
 
   const removeFile = (indexToRemove: number) => {
@@ -182,6 +199,15 @@ export function QuoteForm({ defaultProduct }: { defaultProduct?: string }) {
               options={PRODUCT_TYPES}
             />
             <Field label="Size required" name="size_required" placeholder='e.g. 24" x 8"' />
+            <div className="lg:col-span-2">
+              <SegmentedRadioGroup
+                label="Sign placement *"
+                name="installation_environment"
+                value={installationEnvironment}
+                onValueChange={setInstallationEnvironment}
+                options={INSTALLATION_ENVIRONMENTS}
+              />
+            </div>
             <Field label="Quantity" name="quantity" placeholder="e.g. 50" />
             <Select label="Lighting option" name="lighting_option" options={LIGHTING} />
             <Field
@@ -345,6 +371,7 @@ async function persistQuoteInquiry(data: z.infer<typeof schema>, files: File[]) 
       country: data.country || null,
       product_type: data.product_type || null,
       size_required: data.size_required || null,
+      installation_environment: data.installation_environment,
       quantity: data.quantity || null,
       lighting_option: data.lighting_option || null,
       material_finish: data.material_finish || null,
@@ -428,6 +455,75 @@ function Select({
         ))}
       </select>
     </div>
+  );
+}
+
+function SegmentedRadioGroup({
+  label,
+  name,
+  value,
+  onValueChange,
+  options,
+}: {
+  label: string;
+  name: string;
+  value: "" | "Indoor" | "Outdoor";
+  onValueChange: (value: "Indoor" | "Outdoor") => void;
+  options: ReadonlyArray<{
+    value: "Indoor" | "Outdoor";
+    label: string;
+    description: string;
+  }>;
+}) {
+  return (
+    <fieldset className="space-y-1.5">
+      <legend className="mb-2 block text-sm font-medium text-graphite">{label}</legend>
+      <div
+        className="grid gap-3 sm:grid-cols-2"
+        role="radiogroup"
+        aria-label={label}
+      >
+        {options.map((option) => {
+          const checked = value === option.value;
+
+          return (
+            <label
+              key={option.value}
+              className={`relative flex min-h-12 cursor-pointer items-start gap-3 rounded-xl border px-4 py-3 transition ${
+                checked
+                  ? "border-gold/60 bg-gold/[0.08] shadow-[0_10px_24px_-18px_rgba(185,149,83,0.65)]"
+                  : "border-border bg-background hover:border-gold/35 hover:bg-[var(--card-soft)]"
+              }`}
+            >
+              <input
+                type="radio"
+                name={name}
+                value={option.value}
+                checked={checked}
+                onChange={() => onValueChange(option.value)}
+                className="sr-only"
+              />
+              <span
+                aria-hidden="true"
+                className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition ${
+                  checked
+                    ? "border-gold/70 bg-gold text-graphite"
+                    : "border-border bg-card text-transparent"
+                }`}
+              >
+                <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
+              </span>
+              <span className="min-w-0">
+                <span className="block text-sm font-medium text-graphite">{option.label}</span>
+                <span className="mt-1 block text-xs leading-5 text-muted-foreground">
+                  {option.description}
+                </span>
+              </span>
+            </label>
+          );
+        })}
+      </div>
+    </fieldset>
   );
 }
 

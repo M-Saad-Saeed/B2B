@@ -19,6 +19,7 @@ export type Database = {
           file_urls: Json;
           full_name: string;
           id: string;
+          installation_environment: string | null;
           lighting_option: string | null;
           material_finish: string | null;
           notes: string | null;
@@ -39,6 +40,7 @@ export type Database = {
           file_urls?: Json;
           full_name: string;
           id?: string;
+          installation_environment?: string | null;
           lighting_option?: string | null;
           material_finish?: string | null;
           notes?: string | null;
@@ -59,6 +61,7 @@ export type Database = {
           file_urls?: Json;
           full_name?: string;
           id?: string;
+          installation_environment?: string | null;
           lighting_option?: string | null;
           material_finish?: string | null;
           notes?: string | null;
