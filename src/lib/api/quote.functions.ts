@@ -1,6 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
+const WEB3FORMS_ACCESS_KEY = "589fe1d1-718e-4078-8416-a688dd1c5c97";
+
 const quoteNotificationSchema = z.object({
   full_name: z.string().trim().min(1).max(120),
   business_name: z.string().trim().max(160).optional().or(z.literal("")),
@@ -34,7 +36,7 @@ export const validateQuoteSubmission = createServerFn({ method: "POST" })
 export const sendQuoteNotification = createServerFn({ method: "POST" })
   .inputValidator(quoteNotificationSchema)
   .handler(async ({ data }) => {
-    const accessKey = process.env.WEB3FORMS_ACCESS_KEY;
+    const accessKey = process.env.WEB3FORMS_ACCESS_KEY || WEB3FORMS_ACCESS_KEY;
 
     if (!accessKey) {
       if (process.env.NODE_ENV !== "production") {

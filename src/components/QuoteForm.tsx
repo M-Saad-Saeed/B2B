@@ -3,9 +3,9 @@ import { z } from "zod";
 import { ArrowRight, CheckCircle2, Upload, Loader2, Trash2, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
-import { sendQuoteNotification, validateQuoteSubmission } from "@/lib/api/quote.functions";
 
 const WA_URL = "https://wa.me/14304314377";
+const WEB3FORMS_ACCESS_KEY = "589fe1d1-718e-4078-8416-a688dd1c5c97";
 
 const PRODUCT_TYPES = [
   "Acrylic Logo Sign",
@@ -77,7 +77,9 @@ export function QuoteForm({ defaultProduct }: { defaultProduct?: string }) {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [files, setFiles] = useState<File[]>([]);
-  const [installationEnvironment, setInstallationEnvironment] = useState<"" | "Indoor" | "Outdoor">("");
+  const [installationEnvironment, setInstallationEnvironment] = useState<"" | "Indoor" | "Outdoor">(
+    "",
+  );
   const submittingRef = useRef(false);
 
   const removeFile = (indexToRemove: number) => {
@@ -113,24 +115,8 @@ export function QuoteForm({ defaultProduct }: { defaultProduct?: string }) {
     submittingRef.current = true;
     setSubmitting(true);
     try {
-      await validateQuoteSubmission({
-        data: {
-          ...parsed.data,
-          company_website: typeof raw.company_website === "string" ? raw.company_website : "",
-        },
-      });
       await persistQuoteInquiry(parsed.data, files);
-
-      try {
-        await sendQuoteNotification({ data: parsed.data });
-      } catch (notificationError) {
-        if (import.meta.env.DEV) {
-          console.error(
-            "Quote inquiry was saved, but notification delivery failed",
-            notificationError,
-          );
-        }
-      }
+      await sendWeb3FormsQuote(parsed.data);
 
       setSuccess(true);
     } catch (err) {
@@ -401,6 +387,56 @@ async function persistQuoteInquiry(data: z.infer<typeof schema>, files: File[]) 
   }
 }
 
+async function sendWeb3FormsQuote(data: z.infer<typeof schema>) {
+  const formData = new FormData();
+  formData.append("access_key", WEB3FORMS_ACCESS_KEY);
+  formData.append("subject", `New quote request from ${data.full_name}`);
+  formData.append("from_name", "Custom Logo Sign Website");
+  formData.append("name", data.full_name);
+  formData.append("email", data.email);
+  formData.append("replyto", data.email);
+  formData.append("message", formatQuoteMessage(data));
+  formData.append("business_name", data.business_name || "-");
+  formData.append("whatsapp_number", data.whatsapp_number || "-");
+  formData.append("country", data.country || "-");
+  formData.append("product_type", data.product_type || "-");
+  formData.append("size_required", data.size_required || "-");
+  formData.append("installation_environment", data.installation_environment);
+  formData.append("quantity", data.quantity || "-");
+  formData.append("lighting_option", data.lighting_option || "-");
+  formData.append("material_finish", data.material_finish || "-");
+  formData.append("deadline", data.deadline || "-");
+  formData.append("notes", data.notes || "-");
+
+  const response = await fetch("https://api.web3forms.com/submit", {
+    method: "POST",
+    body: formData,
+  });
+  const result = (await response.json()) as { success?: boolean; message?: string };
+
+  if (!response.ok || !result.success) {
+    throw new Error(result.message || "Web3Forms submission failed");
+  }
+}
+
+function formatQuoteMessage(data: z.infer<typeof schema>) {
+  return [
+    `Full name: ${data.full_name}`,
+    `Business name: ${data.business_name || "-"}`,
+    `Email: ${data.email}`,
+    `WhatsApp number: ${data.whatsapp_number || "-"}`,
+    `Country: ${data.country || "-"}`,
+    `Product type: ${data.product_type || "-"}`,
+    `Size required: ${data.size_required || "-"}`,
+    `Sign placement: ${data.installation_environment}`,
+    `Quantity: ${data.quantity || "-"}`,
+    `Lighting option: ${data.lighting_option || "-"}`,
+    `Material / finish: ${data.material_finish || "-"}`,
+    `Deadline: ${data.deadline || "-"}`,
+    `Notes: ${data.notes || "-"}`,
+  ].join("\n");
+}
+
 function Field({
   label,
   name,
@@ -478,11 +514,7 @@ function SegmentedRadioGroup({
   return (
     <fieldset className="space-y-1.5">
       <legend className="mb-2 block text-sm font-medium text-graphite">{label}</legend>
-      <div
-        className="grid gap-3 sm:grid-cols-2"
-        role="radiogroup"
-        aria-label={label}
-      >
+      <div className="grid gap-3 sm:grid-cols-2" role="radiogroup" aria-label={label}>
         {options.map((option) => {
           const checked = value === option.value;
 
