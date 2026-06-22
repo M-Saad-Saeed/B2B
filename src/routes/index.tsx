@@ -36,7 +36,7 @@ import bulkOrdersSign from "@/assets/products/bulk-orders-sign.jpg";
 import frontLitSign from "@/assets/products/front-lit-sign.jpg";
 import lightboxSign from "@/assets/products/lightbox-sign.jpg";
 import metalFinishSign from "@/assets/products/metal-finish-sign.jpg";
-import materialsFinishesImage from "@/assets/materials-finishes.jpg";
+import materialsFinishesImage from "@/assets/materials-finishes.png";
 import uvPrintedSign from "@/assets/products/uv-printed-sign.png";
 import weddingAcrylicSign from "@/assets/products/wedding-acrylic-sign.jpg";
 import weddingSeatingSign from "@/assets/products/wedding-seating-sign.jpg";

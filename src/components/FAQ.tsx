@@ -40,7 +40,7 @@ const FAQS = [
   },
   {
     q: "How long does production and shipping take?",
-    a: "Production time depends on the sign type and order size. Shipping time depends on the destination and selected courier. For urgent orders, customers can share their deadline in the quote form.",
+    a: "Our standard production time is usually 2–3 business days after design approval. Worldwide shipping typically takes 6–12 business days, depending on the destination and selected service. We offer both standard and express shipping. For urgent orders, please share your required delivery date in the quote form so we can confirm availability.",
   },
   {
     q: "Is this website for online purchasing?",
