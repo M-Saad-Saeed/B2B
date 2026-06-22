@@ -3,9 +3,11 @@ import { z } from "zod";
 import { ArrowRight, CheckCircle2, Upload, Loader2, Trash2, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
+import { sendQuoteNotification } from "@/lib/api/quote.functions";
 
 const WA_URL = "https://wa.me/14304314377";
 const WEB3FORMS_ACCESS_KEY = "589fe1d1-718e-4078-8416-a688dd1c5c97";
+const SIGNED_FILE_URL_EXPIRY_SECONDS = 60 * 60 * 24 * 30;
 
 const PRODUCT_TYPES = [
   "Acrylic Logo Sign",
@@ -115,8 +117,20 @@ export function QuoteForm({ defaultProduct }: { defaultProduct?: string }) {
     submittingRef.current = true;
     setSubmitting(true);
     try {
-      await persistQuoteInquiry(parsed.data, files);
-      await sendWeb3FormsQuote(parsed.data);
+      const uploadedPaths = await persistQuoteInquiry(parsed.data, files);
+      try {
+        await sendQuoteNotification({
+          data: {
+            ...parsed.data,
+            file_paths: uploadedPaths,
+          },
+        });
+      } catch (notificationError) {
+        if (import.meta.env.DEV) {
+          console.error("Quote notification failed:", notificationError);
+        }
+        await sendWeb3FormsQuoteFallback(parsed.data, uploadedPaths);
+      }
 
       setSuccess(true);
     } catch (err) {
@@ -374,6 +388,8 @@ async function persistQuoteInquiry(data: z.infer<typeof schema>, files: File[]) 
       }
       throw insErr;
     }
+
+    return uploadedPaths;
   } catch (err) {
     if (uploadedPaths.length > 0) {
       const { error: cleanupError } = await supabase.storage
@@ -387,7 +403,8 @@ async function persistQuoteInquiry(data: z.infer<typeof schema>, files: File[]) 
   }
 }
 
-async function sendWeb3FormsQuote(data: z.infer<typeof schema>) {
+async function sendWeb3FormsQuoteFallback(data: z.infer<typeof schema>, filePaths: string[]) {
+  const uploadedFiles = await formatUploadedFilesFallback(filePaths);
   const formData = new FormData();
   formData.append("access_key", WEB3FORMS_ACCESS_KEY);
   formData.append("subject", `New quote request from ${data.full_name}`);
@@ -395,7 +412,7 @@ async function sendWeb3FormsQuote(data: z.infer<typeof schema>) {
   formData.append("name", data.full_name);
   formData.append("email", data.email);
   formData.append("replyto", data.email);
-  formData.append("message", formatQuoteMessage(data));
+  formData.append("message", formatQuoteMessageFallback(data, uploadedFiles));
   formData.append("business_name", data.business_name || "-");
   formData.append("whatsapp_number", data.whatsapp_number || "-");
   formData.append("country", data.country || "-");
@@ -407,6 +424,7 @@ async function sendWeb3FormsQuote(data: z.infer<typeof schema>) {
   formData.append("material_finish", data.material_finish || "-");
   formData.append("deadline", data.deadline || "-");
   formData.append("notes", data.notes || "-");
+  formData.append("uploaded_files", uploadedFiles);
 
   const response = await fetch("https://api.web3forms.com/submit", {
     method: "POST",
@@ -415,11 +433,11 @@ async function sendWeb3FormsQuote(data: z.infer<typeof schema>) {
   const result = (await response.json()) as { success?: boolean; message?: string };
 
   if (!response.ok || !result.success) {
-    throw new Error(result.message || "Web3Forms submission failed");
+    throw new Error(result.message || "Web3Forms fallback submission failed");
   }
 }
 
-function formatQuoteMessage(data: z.infer<typeof schema>) {
+function formatQuoteMessageFallback(data: z.infer<typeof schema>, uploadedFiles: string) {
   return [
     `Full name: ${data.full_name}`,
     `Business name: ${data.business_name || "-"}`,
@@ -434,6 +452,42 @@ function formatQuoteMessage(data: z.infer<typeof schema>) {
     `Material / finish: ${data.material_finish || "-"}`,
     `Deadline: ${data.deadline || "-"}`,
     `Notes: ${data.notes || "-"}`,
+    "",
+    "Uploaded files:",
+    uploadedFiles,
+  ].join("\n");
+}
+
+async function formatUploadedFilesFallback(filePaths: string[]) {
+  if (filePaths.length === 0) {
+    return "None";
+  }
+
+  try {
+    const { data, error } = await supabase.storage
+      .from("quote-uploads")
+      .createSignedUrls(filePaths, SIGNED_FILE_URL_EXPIRY_SECONDS);
+
+    if (error || !data) {
+      throw error ?? new Error("Signed URLs were not created.");
+    }
+
+    const signedUrls = data
+      .map((item) => item.signedUrl)
+      .filter((signedUrl): signedUrl is string => Boolean(signedUrl));
+
+    if (signedUrls.length === filePaths.length) {
+      return signedUrls.map((link, index) => `View file ${index + 1}: ${link}`).join("\n");
+    }
+  } catch (error) {
+    if (import.meta.env.DEV) {
+      console.error("Fallback signed URL creation failed:", error);
+    }
+  }
+
+  return [
+    "Files were uploaded and are available in the admin dashboard.",
+    ...filePaths.map((path, index) => `Stored file ${index + 1}: ${path}`),
   ].join("\n");
 }
 

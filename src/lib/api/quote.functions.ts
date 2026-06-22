@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-const WEB3FORMS_ACCESS_KEY = "589fe1d1-718e-4078-8416-a688dd1c5c97";
+const SIGNED_FILE_URL_EXPIRY_SECONDS = 60 * 60 * 24 * 30;
 
 const quoteNotificationSchema = z.object({
   full_name: z.string().trim().min(1).max(120),
@@ -17,6 +17,18 @@ const quoteNotificationSchema = z.object({
   material_finish: z.string().trim().max(200).optional().or(z.literal("")),
   deadline: z.string().trim().max(80).optional().or(z.literal("")),
   notes: z.string().trim().max(2000).optional().or(z.literal("")),
+  file_paths: z
+    .array(
+      z
+        .string()
+        .min(1)
+        .max(500)
+        .refine((path) => path.startsWith("quote-inquiries/"), {
+          message: "Invalid quote upload path",
+        }),
+    )
+    .max(5)
+    .optional(),
 });
 
 const quoteSubmissionSchema = quoteNotificationSchema.extend({
@@ -36,7 +48,8 @@ export const validateQuoteSubmission = createServerFn({ method: "POST" })
 export const sendQuoteNotification = createServerFn({ method: "POST" })
   .inputValidator(quoteNotificationSchema)
   .handler(async ({ data }) => {
-    const accessKey = process.env.WEB3FORMS_ACCESS_KEY || WEB3FORMS_ACCESS_KEY;
+    const fallbackAccessKey = "589fe1d1-718e-4078-8416-a688dd1c5c97";
+    const accessKey = process.env.WEB3FORMS_ACCESS_KEY || fallbackAccessKey;
 
     if (!accessKey) {
       if (process.env.NODE_ENV !== "production") {
@@ -44,6 +57,8 @@ export const sendQuoteNotification = createServerFn({ method: "POST" })
       }
       return { ok: false, skipped: true };
     }
+
+    const fileLinks = await createQuoteFileLinks(data.file_paths ?? []);
 
     const response = await fetch("https://api.web3forms.com/submit", {
       method: "POST",
@@ -58,7 +73,7 @@ export const sendQuoteNotification = createServerFn({ method: "POST" })
         name: data.full_name,
         email: data.email,
         replyto: data.email,
-        message: formatEmailMessage(data),
+        message: formatEmailMessage(data, fileLinks),
         business_name: data.business_name || undefined,
         whatsapp_number: data.whatsapp_number || undefined,
         country: data.country || undefined,
@@ -87,7 +102,57 @@ export const sendQuoteNotification = createServerFn({ method: "POST" })
     return { ok: true, skipped: false };
   });
 
-function formatEmailMessage(data: z.infer<typeof quoteNotificationSchema>) {
+type QuoteFileLinkResult =
+  | { status: "none"; lines: string[] }
+  | { status: "signed"; lines: string[] }
+  | { status: "stored"; lines: string[] };
+
+async function createQuoteFileLinks(filePaths: string[]): Promise<QuoteFileLinkResult> {
+  if (filePaths.length === 0) {
+    return { status: "none", lines: ["None"] };
+  }
+
+  try {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const signedLinks: string[] = [];
+
+    for (const path of filePaths) {
+      const { data, error } = await supabaseAdmin.storage
+        .from("quote-uploads")
+        .createSignedUrl(path, SIGNED_FILE_URL_EXPIRY_SECONDS);
+
+      if (error || !data?.signedUrl) {
+        throw error ?? new Error("Signed URL was not created.");
+      }
+
+      signedLinks.push(data.signedUrl);
+    }
+
+    return {
+      status: "signed",
+      lines: signedLinks.map((link, index) => `View file ${index + 1}: ${link}`),
+    };
+  } catch (error) {
+    if (process.env.NODE_ENV !== "production") {
+      console.error("Quote upload signed URL creation failed", {
+        message: error instanceof Error ? error.message : String(error),
+      });
+    }
+
+    return {
+      status: "stored",
+      lines: [
+        "Files were uploaded and are available in the admin dashboard.",
+        ...filePaths.map((path, index) => `Stored file ${index + 1}: ${path}`),
+      ],
+    };
+  }
+}
+
+function formatEmailMessage(
+  data: z.infer<typeof quoteNotificationSchema>,
+  fileLinks: QuoteFileLinkResult,
+) {
   return [
     `Full name: ${data.full_name}`,
     `Business name: ${data.business_name || "-"}`,
@@ -102,5 +167,8 @@ function formatEmailMessage(data: z.infer<typeof quoteNotificationSchema>) {
     `Material / finish: ${data.material_finish || "-"}`,
     `Deadline: ${data.deadline || "-"}`,
     `Notes: ${data.notes || "-"}`,
+    "",
+    "Uploaded files:",
+    fileLinks.lines.join("\n"),
   ].join("\n");
 }
