@@ -64,7 +64,7 @@ import pvcFoam3DLettersImage from "@/assets/products/pvc-foam-3d-letters.jpeg";
 import painted3DLettersImage from "@/assets/products/painted-3d-letters.jpeg";
 
 const WA_URL = "https://wa.me/14304314377";
-const INSTAGRAM = "https://www.instagram.com/custom_logo_signs_/";
+const INSTAGRAM = "https://www.instagram.com/logo._.signs/";
 const EMAIL = "support@customlogosigns.com";
 
 export const Route = createFileRoute("/")({
@@ -1292,7 +1292,7 @@ function Contact() {
           <MobileContactRow
             Icon={Instagram}
             label="Instagram"
-            value="@custom_logo_signs_"
+            value="@logo._.signs"
             href={INSTAGRAM}
           />
           <MobileContactRow Icon={MapPin} label="Location" value="Austin, Texas 78731" />
@@ -1366,7 +1366,7 @@ function Contact() {
               <ContactRow
                 Icon={Instagram}
                 label="Instagram"
-                value="@custom_logo_signs_"
+                value="@logo._.signs"
                 href={INSTAGRAM}
               />
               <ContactRow Icon={MapPin} label="Location" value="Austin, Texas 78731" />
@@ -1670,7 +1670,7 @@ function Footer() {
                   rel="noopener noreferrer"
                   className="hover:text-gold"
                 >
-                  @custom_logo_signs_
+                  @logo._.signs
                 </a>
               </li>
               <li className="flex items-start gap-2">
